@@ -1,10 +1,12 @@
-import { Button } from "@/components/ui/button";
+import { POSTS } from "./demoPosts";
+import { Post } from "./_components/Post";
 
 export default function Home() {
   return (
     <>
-      <h1>Hello</h1>
-      <Button variant={"outline"}>Demo</Button>
+      {POSTS.map((post) => {
+        return <Post post={post} key={post.title} />;
+      })}
     </>
   );
 }
