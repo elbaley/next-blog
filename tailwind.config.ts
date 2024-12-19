@@ -1,6 +1,8 @@
 import type { Config } from "tailwindcss";
+import plugin from "tailwindcss/plugin";
+import tailwindCssAnimate from "tailwindcss-animate";
+import typograpgy from "@tailwindcss/typography";
 
-const plugin = require("tailwindcss/plugin");
 export default {
   darkMode: ["class"],
   content: [
@@ -60,8 +62,8 @@ export default {
     },
   },
   plugins: [
-    require("tailwindcss-animate"),
-    require("@tailwindcss/typography"),
+    tailwindCssAnimate,
+    typograpgy,
     plugin(function ({ addVariant }) {
       addVariant(
         "prose-inline-code",

@@ -40,14 +40,19 @@ export default async function Page({
     })
 
     .use(rehypeStringify)
-    // .use(html)
     .process(matterResult.content);
 
   const contentHtml = processedContent.toString();
+  const date = new Date(matterResult.data.date).toLocaleDateString("tr-TR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 
   return (
     <article className="prose max-w-[80ch] dark:prose-invert prose-inline-code:border prose-inline-code:before:hidden prose-inline-code:after:hidden prose-inline-code:p-1 prose-inline-code:border-secondary/40 prose-inline-code:rounded-md prose-inline-code:bg-secondary/20 prose-pre:ps-0 prose-pre:pe-0 prose-pre:p-0 prose-pre:py-2">
       <h1>{matterResult.data.title}</h1>
+      <span className="text-secondary ">{date}</span>
       <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
     </article>
   );
