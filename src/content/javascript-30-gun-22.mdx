@@ -1,0 +1,57 @@
++++
+title= "Javascript 30 - Gün 22"
+description = "Javascript 30 Challenge Proje 22:JS ile linklere vurgu eklemek"
+date= "2023-05-19T02:47:07+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"Javascript"
+]
+
+draft= false
++++
+Projenin demosu : [Demo](https://elbaley.github.io/js-30/22/index-solution.html)
+
+Başlangıç dosyalarını bulabileceğiniz repom: [js-30 | github](https://github.com/elbaley/js-30)
+
+## Amaç
+Javascript kullanarak sitedeki tüm linkleri takip edip, herhangi birinin üzerine gelindiğinde sarı bir arka plan eklememizi sağlayacak bir span elementini doğru bir şekilde konumlandırmamız gerekiyor.
+
+## Çözümüm
+```html
+<script>
+// tüm a elementlerini seçelim
+const links = document.querySelectorAll('a');
+// vurgu elementini oluşturup body elementine ekleyelim
+const highlight = document.createElement('span');
+highlight.classList.add('highlight');
+document.body.appendChild(highlight);
+
+function highlightLink() {
+  // üzerine gelinen linkin sayfadaki konum bilgilerini alalım
+  const linkCoords = this.getBoundingClientRect();
+  const coords = {
+    width: linkCoords.width,
+    height: linkCoords.height,
+    top: linkCoords.top + window.scrollY,
+    left: linkCoords.left + window.scrollX
+  };
+
+  // vurguyu gösterdiğimiz span elementinin genişlik/ yükseklik değerini
+  // üzerine gelinen linkle aynı yapalım
+  // style.transform ile de önceki yerinden yeni yerine geçmesini sağlayalım
+  highlight.style.width = `${coords.width}px`;
+  highlight.style.height = `${coords.height}px`;
+  highlight.style.transform = `translate(${coords.left}px, ${coords.top}px)`;
+
+}
+
+// herhangi bir linkin üzerine fare ile gelindiğinde fonksiyon çalışacaktır
+links.forEach(a => a.addEventListener('mouseenter', highlightLink));
+
+</script>
+```
+

@@ -1,0 +1,88 @@
++++
+title= "Javascript 30 - Gün 25"
+description = "Javascript 30 Challenge Proje 25: Event Bubbling, Event Capture ve Event Bubbling"
+date= "2023-05-21T02:44:33+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"Javascript"
+]
+
+draft= false
++++
+Projenin demosu : [Demo](https://elbaley.github.io/js-30/25/index-solution.html)
+
+Başlangıç dosyalarını bulabileceğiniz repom: [js-30 | github](https://github.com/elbaley/js-30)
+
+Bugün Javascript'te önemli konulardan olan event propagation, event bubbling ve event caputuring terimlerini basit bir örnek ile anlamaya çalışacağız.
+
+HTML markup'ımız bu şekilde:
+```html
+ <div class="one">
+    <div class="two">
+      <div class="three">
+      </div>
+    </div>
+  </div>
+```
+## Event propagation
+Event Propagation Javascript'te birden fazla olay dinleyicisinin tek bir olay ile tetiklenmesi sürecidir. Örneğin yukarıdaki her bir div için `click` eventi eklediğimizde ve en içteki `three` classına sahip olan dive tıkladığımızda üstündeki divlerin de tıklanma olayı tetiklenektir.
+
+## Event bubbling
+Olayların en alttan başlayıp yukarıya doğru çalışmaya devam etmesine "Event bubbling" diyoruz. Aşağıdaki JS kodumuz en içteki dive tıklandığında, ikinci ve birinci divlerin de tıklama olaylarını tetikler.
+```js
+const divs = document.querySelectorAll('div');
+
+function logText(e) {
+  console.log(this.classList.value);
+}
+
+divs.forEach(div => div.addEventListener('click', logText));
+
+```
+Burada bu davranışı istemiyorsak yani en içteki dive tıklandığında sadece o dive ait tıklama olayının tetiklenmesini istiyorsak "Event propagation"ı devre dışı bırakabiliriz:
+```js
+const divs = document.querySelectorAll('div');
+
+function logText(e) {
+  e.stopPropagation() // olayların yukarıya doğru tetiklenmeye devam etmesini engeller
+  console.log(this.classList.value);
+}
+
+divs.forEach(div => div.addEventListener('click', logText));
+
+```
+
+## Event capturing
+Eğer Event Bubbling'deki davranışın tam tersini istiyorsak (yani en içteki üçüncü dive tıklandığında sırasıyla birinci, ikinci, üçüncü olayları tetiklemek istiyorsak) `event capturing` kullanabiliriz. Bunun için tek yapmamız gereken eklediğimiz olay dinleyiciye `options` parametresi vermek ve bunun içerisinde `capture:true` olarak belirlemek:
+
+```js
+const divs = document.querySelectorAll('div');
+
+function logText(e) {
+  console.log(this.classList.value);
+}
+
+divs.forEach(div => div.addEventListener('click', logText,{
+capture:true
+}));
+
+```
+## `once` seçeneği ile tek sefer çalışan event listener
+Bazı durumlarda yalnızca bir kez çalışmasını istediğimiz olaylar olabilir. Mesela alışveriş sitesinde bir "Satın al" butonunuz var buna birden fazla basılmasını istemeyebilirsiniz. Bunun için de `options` objesine `once:true` ekleyebiliriz.
+
+```html
+<button id="buy">Satın al</button>
+```
+```js
+const buyBtn = document.querySelector('#buy')
+
+function buyProduct(){
+  console.log("Bought!");
+}
+buyBtn.addEventListener('click',buyProduct,{once:true})
+```
+

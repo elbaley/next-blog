@@ -1,0 +1,135 @@
++++
+title= "Javascript 30 - Gün 5"
+description = "Javascript 30 Challenge Proje 5: CSS Flex ile Resim Galerisi"
+date= "2023-03-24T15:43:58+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"Javascript"
+]
+
+draft= false
++++
+
+Bugün CSS flex kullanarak bir resim galerisi yapacağız.
+
+Projenin demosu : [Demo](https://elbaley.github.io/js-30/05/index-solution.html)
+
+Başlangıç dosyalarını bulabileceğiniz repom: [js-30 | github](https://github.com/elbaley/js-30)
+
+## 1. Flex ile galeriyi oluşturalım
+
+Başlangıçta site aşağıdaki gibi duruyor.
+![Başlangıç](/images/js-30-gun-5-baslangic.webp)
+
+Resimlerin yanyana gelmesini sağlamak için `.panels` containerını flex yapalım.
+
+```css
+.panels {
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+}
+```
+
+Resimler yanyana geldi ancak genişliğin tamamı kullanılmıyor, kullanılması için flex'in içindeki elemanların sahip olduğu `.panel` class'ına `flex:1` özelliğini ekleyelim.
+
+```css
+.panel {
+  /* .... */
+  flex: 1;
+}
+```
+
+`.panel` içindeki yazıların alt alta sıralanması ve dikeyde ortalanması için aşağıdaki değişiklikleri yapalım.
+
+```css
+.panel > * {
+  margin: 0;
+  width: 100%;
+  transition: transform 0.5s;
+  /* yazıları yanyana alır */
+  display: flex;
+  /* yazıları ortalar */
+  justify-content: center;
+  align-items: center;
+  flex: 1 0 auto;
+}
+```
+
+![](/images/js-30-5-asama1.webp)
+
+Şimdi her paneldeki ilk ve son metinleri (örneğin ilk panel için "Hey" ve "Dance!" metinlerini) başlangıçta gizlemek ve yalnızca `.open-active` classına sahip olduklarında göstermek için aşağıdaki değişiklikleri yapalım.
+
+```css
+/* panellerdeki ilk ve son metinleri gizle ve göster */
+.panel > *:first-child {
+  transform: translateY(-100%);
+}
+
+.panel.open-active > *:first-child {
+  transform: translateY(0);
+}
+
+.panel > *:last-child {
+  transform: translateY(100%);
+}
+
+.panel.open-active > *:last-child {
+  transform: translateY(0);
+}
+```
+
+Artık yalnızca `.open-active` classına sahip panellerde yazılar görünecektir.
+
+<video src="/videos/js-30-gun-5-css-open-active.mp4" style="max-width: 100%" muted autoplay loop controls>
+
+</video>
+
+Son olarak `.open` class'ına sahip panellerin genişliğini flex ile büyütelim.
+
+```css
+.panel.open {
+  flex: 5;
+  font-size: 40px;
+}
+```
+
+<video src="/videos/js-30-gun-5-css-final.mp4" style="max-width: 100%" muted autoplay loop controls>
+
+</video>
+
+## 2. Javascript ile panellere tıklandığında gerekli sınıfları ekleyelim
+
+Javascript tarafında `.panel` class'ına sahip tüm elementleri seçelim ve bunlara tıklandığında ".open" classını ekleyelim.
+Ayrıca 2.Gün'de gördüğümüz `transitionend` olayında da ".open-active" class'ını ekleyerek yazıların görünmesini sağlayalım.
+
+```html
+<script>
+const panels = document.querySelectorAll(".panel");
+
+function toggleOpen() {
+  this.classList.toggle("open");
+}
+function toggleActive(e) {
+  console.log(e.propertyName);
+  if (e.propertyName.includes("flex")) {
+    this.classList.toggle("open-active");
+  }
+}
+
+panels.forEach((panel) => panel.addEventListener("click", toggleOpen));
+panels.forEach((panel) =>
+  panel.addEventListener("transitionend", toggleActive)
+);
+</script>
+```
+
+### Bu projeden öğrendiklerim
+
+- flex:1 ile flex elemanlarının mevcut genişliğin tamamını kullanılması sağlanabilir.
+- `toggle` ile elementteki bir classı ekleyip/silebiliriz.
+- transitionend eventinde 'transition'a uğrayan özelliğin flex olduğunu anlamak için e.propertyName kullanılabilir.

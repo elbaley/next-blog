@@ -1,0 +1,145 @@
++++
+title= "Javascript 30 - Gün 11"
+description = "Javascript 30 Challenge Proje 11: Özel Video Oynatıcı"
+date= "2023-05-03T01:38:26+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+
+]
+
+draft= false
++++
+Bugün Javascript ile özel video oynatıcı geliştireceğiz.
+
+Projenin demosu : [Demo](https://elbaley.github.io/js-30/11/index-solution.html)
+
+Başlangıç dosyalarını bulabileceğiniz repom: [js-30 | github](https://github.com/elbaley/js-30)
+
+## Amaç
+Javascript ve HTML5 Video API'ını kullanarak özel bir video oynatıcı geliştireceğiz. Bu oynatıcı;
+- Video oynatma/duraklatma
+- Ses kontrolü
+- Hız kontrolü
+- İleri/geri sarma 
+- Tam ekran butonuna sahip olacak.
+## Çözümüm
+
+```html
+<div class="player">
+  <video class="player__video viewer" src="652333414.mp4"></video>
+
+  <div class="player__controls">
+    <div class="progress">
+      <div class="progress__filled"></div>
+    </div>
+    <button class="player__button toggle" title="Toggle Play">►</button>
+    <input
+      type="range"
+      name="volume"
+      class="player__slider"
+      min="0"
+      max="1"
+      step="0.05"
+      value="1"
+    />
+    <input
+      type="range"
+      name="playbackRate"
+      class="player__slider"
+      min="0.5"
+      max="2"
+      step="0.1"
+      value="1"
+    />
+    <button data-skip="-10" class="player__button">« 10s</button>
+    <button data-skip="25" class="player__button">25s »</button>
+    <button class="toggle-fullscreen">Full</button>
+  </div>
+</div>
+
+<script src="scripts.js"></script>
+```
+
+```js
+// Elementlerimizi alalım
+const player = document.querySelector(".player");
+const video = player.querySelector(".viewer");
+const progress = player.querySelector(".progress");
+const progressBar = player.querySelector(".progress__filled");
+const toggle = player.querySelector(".toggle");
+const toggleFullscreeen = document.querySelector(".toggle-fullscreen");
+const skipButtons = player.querySelectorAll("[data-skip]");
+const ranges = player.querySelectorAll(".player__slider");
+
+// Fonksiyonlarımızı oluşturalım
+function togglePlay() {
+  // Video duraklatıldıysa oynatır oynuyorsa duraklatır.
+  if (video.paused) {
+    video.play();
+  } else {
+    video.pause();
+  }
+}
+
+function updateButton() {
+  // Oynatma/duraklatma butonunun içindeki ikonu günceller
+  const icon = this.paused ? "⏵" : "⏸";
+  toggle.textContent = icon;
+}
+
+function skip() {
+  // Butonun sahip olduğu "data-skip" özelliği kadar ileri/geri alır. 
+  const skipAmount = parseFloat(this.dataset.skip);
+  video.currentTime += skipAmount;
+}
+
+function handleRangeUpdate() {
+  // Ses ve oynatma hızını günceller
+  video[this.name] = this.value;
+}
+
+function handleProgress() {
+  // Video ilerleme çubuğunu günceller
+  const percent = (video.currentTime / video.duration) * 100;
+  progressBar.style.flexBasis = `${percent}%`;
+}
+
+function scrub(e) {
+  // İlerleme çubuğuna tıklanıldığında videoyu ilgili yere alır
+  const scrubTime = (e.offsetX / progress.offsetWidth) * video.duration;
+  video.currentTime = scrubTime;
+}
+
+// Olay dinleyicilerini ekleyelim
+video.addEventListener("click", togglePlay);
+video.addEventListener("play", updateButton);
+video.addEventListener("pause", updateButton);
+video.addEventListener("timeupdate", handleProgress);
+toggle.addEventListener("click", togglePlay);
+
+skipButtons.forEach((skipButton) => skipButton.addEventListener("click", skip));
+
+ranges.forEach((range) => range.addEventListener("change", handleRangeUpdate));
+ranges.forEach((range) =>
+  range.addEventListener("mousemove", handleRangeUpdate)
+);
+
+let mousedown = false;
+progress.addEventListener("click", scrub);
+progress.addEventListener("mousemove", (e) => mousedown && scrub(e));
+progress.addEventListener("mousedown", () => (mousedown = true));
+progress.addEventListener("mouseup", () => (mousedown = false));
+
+toggleFullscreeen.addEventListener("click", () => {
+  // Tam ekran modunu açar/kapatır
+  if (!video.fullscreenElement) {
+    video.requestFullscreen();
+  } else if (video.exitFullscreen) {
+    video.exitFullscreen();
+  }
+});
+```

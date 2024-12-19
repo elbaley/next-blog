@@ -1,0 +1,124 @@
++++
+title= "Javascript 30 - Gün 14"
+description = "Javascript 30 Challenge Proje 14: Referans ve Kopyalama"
+date= "2023-05-09T23:49:40+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"Javascript"
+]
+
+draft= false
++++
+
+Projenin demosu : [Demo](https://elbaley.github.io/js-30/14/index-solution.html)
+ 
+Başlangıç dosyalarını bulabileceğiniz repom: [js-30 | github](https://github.com/elbaley/js-30)
+
+
+Javascript'te iki çesit veri tipi bulunmaktadir: Primitive ve non-primitive(reference). 
+Primitive veri tipindeki değerleri kopyalamak oldukça basit olsa da Array ve Objeler `reference` bazlı veri tipleri olduğundan kopyalama işlemleri kafa karıştırıcı olabiliyor. 
+
+Primitive bir veri tipi olan stringi kopyalamayla başlayalım.
+```js
+let isim = 'Furkan';
+let ikinciIsim = isim;
+
+console.log(isim);//👉 Furkan
+console.log(ikinciIsim);//👉 Furkan
+// ikinciIsim değişkeninin değerini değiştirelim.
+// isim değişkeni bu durumdan etkilenmeyecektir.
+ikinciIsim = 'Didem';
+
+console.log(isim);//👉 Furkan
+console.log(ikinciIsim);//👉 Didem
+```
+
+Bu beklenen davranış diğer primitive veri tipleri(boolean,number vs.) için de geçerli.
+## Array kopyalama
+Aynı kopyalama işlemini primitive olmayan array ile deneyelim:
+```js
+const insanlar = ['Sabahattin Ali','Nazım Hikmet','Elif Şafak','Orhan Pamuk'];
+const yazarlar = insanlar;
+// üçüncü elemanı yazarlar arrayinde değiştirmeyi deneyelim
+yazarlar[2] = 'Halide Edip Adıvar';
+console.log(insanlar);//👉 ['Sabahattin Ali', 'Nazım Hikmet', 'Halide Edip Adıvar', 'Orhan Pamuk'] 
+console.log(yazarlar);//👉 ['Sabahattin Ali', 'Nazım Hikmet', 'Halide Edip Adıvar', 'Orhan Pamuk'] 
+```
+Görüleceği gibi orijinal arraydeki 3. elemanda güncellendi! Bunun sebebi arrayi kopyalarken aslında arrayin kendisini değil `referansını` kopyaladık. Her iki array aynı referansa işaret ettiğinden herhangi birini güncellediğimizde bu diğerini de etkiliyor.
+Bu durumu çözmek için;
+- Eski usül `[].slice()` metodunu kullanabiliriz. Slice metodunu parametresiz çalıştırınca bize orijinal arrayi olduğu gibi dönecektir ancak bu yeni bir array olacaktır ve referansı farklı olduğundan yapılan değişikliklerden orijinal array etkilenmeyecektir.
+```js
+const insanlar = ['Sabahattin Ali','Nazım Hikmet','Elif Şafak','Orhan Pamuk'];
+const yazarlar = insanlar.slice();
+// üçüncü elemanı yazarlar arrayinde değiştirmeyi deneyelim
+yazarlar[2] = 'Halide Edip Adıvar';
+console.log(insanlar);//👉 ['Sabahattin Ali', 'Nazım Hikmet', 'Elif Şafak', 'Orhan Pamuk']
+console.log(yazarlar);//👉 ['Sabahattin Ali', 'Nazım Hikmet', 'Halide Edip Adıvar', 'Orhan Pamuk'] 
+```
+- `concat` metodu ile boş bir arraye kopyalamak istediğimiz arrayi ekleyebiliriz.
+```js
+const insanlar = ['Sabahattin Ali','Nazım Hikmet','Elif Şafak','Orhan Pamuk'];
+const yazarlar = [].concat(insanlar);
+// üçüncü elemanı yazarlar arrayinde değiştirmeyi deneyelim
+yazarlar[2] = 'Halide Edip Adıvar';
+console.log(insanlar);//👉 ['Sabahattin Ali', 'Nazım Hikmet', 'Elif Şafak', 'Orhan Pamuk']
+console.log(yazarlar);//👉 ['Sabahattin Ali', 'Nazım Hikmet', 'Halide Edip Adıvar', 'Orhan Pamuk'] 
+```
+
+- Daha modern bir yöntem olarak ise ES6 ile gelen spread syntaxını kullanabiliriz.
+```js
+const insanlar = ['Sabahattin Ali','Nazım Hikmet','Elif Şafak','Orhan Pamuk'];
+const yazarlar = [...insanlar];
+// üçüncü elemanı yazarlar arrayinde değiştirmeyi deneyelim
+yazarlar[2] = 'Halide Edip Adıvar';
+console.log(insanlar);//👉 ['Sabahattin Ali', 'Nazım Hikmet', 'Elif Şafak', 'Orhan Pamuk']
+console.log(yazarlar);//👉 ['Sabahattin Ali', 'Nazım Hikmet', 'Halide Edip Adıvar', 'Orhan Pamuk'] 
+```
+
+## Object kopyalama
+Objeler de non-primitive veri tipidir dolayısıyla kopyalama yaparken aynı problemle karşılaşırız.
+```js
+const universite = {
+    isim: 'ODTU',
+    il: 'Ankara',
+}
+const yeniUniversite= universite 
+
+yeniUniversite.isim = 'Hacettepe'
+console.log(universite);//👉 {isim: 'Hacettepe', il: 'Ankara'}
+console.log(yeniUniversite);//👉 {isim: 'Hacettepe', il: 'Ankara'}
+```
+Bu davranıştan kurtulmak ve objeyi gerçekten kopyalamak için: 
+- `Object.assign` kullanabiliriz. 
+```js
+const universite = {
+    isim: 'ODTU',
+    il: 'Ankara',
+}
+const yeniUniversite= Object.assign({},universite) 
+
+yeniUniversite.isim = 'Hacettepe'
+console.log(universite);//👉 {isim: 'ODTU', il: 'Ankara'}
+console.log(yeniUniversite);//👉 {isim: 'Hacettepe', il: 'Ankara'}
+```
+- ES6 ile gelen spread syntaxını kullanabiliriz.
+```js
+const universite = {
+    isim: 'ODTU',
+    il: 'Ankara',
+}
+const yeniUniversite= {...universite};
+
+yeniUniversite.isim = 'Hacettepe'
+console.log(universite);//👉 {isim: 'ODTU', il: 'Ankara'}
+console.log(yeniUniversite);//👉 {isim: 'Hacettepe', il: 'Ankara'}
+
+```
+
+Gerek Object gerekse de Array kopyalamak için verilen yöntemlerin yalnızca 1 seviye derinliğinde olduğunu unutmayın. Yani örneğin arrayiniz içinde başka bir array/object varsa ve yukarıdaki yöntemlerle kopyalama yaparsanız referansları aynı olacak ve hatalarla karşılaşma ihtimaliniz olacaktır. 
+Bundan kaçınmak için internette bulabileceğiniz `cloneDeep` metodlarını kullanmalısınız. 
+

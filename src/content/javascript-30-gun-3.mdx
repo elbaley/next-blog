@@ -1,0 +1,104 @@
++++
+title= "Javascript 30 - Gün 3"
+description = "Javascript 30 Challenge Proje 3: CSS değişkenleri ile çalışmak."
+date= "2023-03-20T13:57:39+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"Javascript"
+]
+
+draft= false
++++
+
+Bugünkü projede CSS'de değişkenler tanımlayacağız ve bu değişkenleri JavaScript ile değiştirerek, demosunu [burada](https://elbaley.github.io/js-30/03/index-solution.html) görebileceğiniz bir proje elde edeceğiz.
+
+Başlangıç dosyalarını bulabileceğiniz repom: [js-30 | github](https://github.com/elbaley/js-30)
+
+## 1. CSS'de değişkenler
+
+CSS'de değişkenler kullanarak aynı değeri tekrar tekrar yazmaktan kurtulabilir, ve güncellerken tek bir yerden güncelleyebiliriz.
+
+Örneğin aşağıda :root seçicisini (belgenin en üst düzey ögesini hedefleyen bir css seçicisi) kullanarak yazı rengini belirlediğim bir değişken kullandım. Eğer bu rengi daha sonra değiştirmek istersem tek bir yerden değiştirmem yeterli olacaktır.
+
+```css
+:root {
+  --yazi-rengi: #f2f2f2;
+}
+.ust-menu {
+  font-size: 20px;
+  color: var(--yazi-rengi);
+}
+.alt-menu {
+  font-size: 12px;
+  color: var(--yazi-rengi);
+}
+```
+
+Projedede değişkenleri kullanarak `img` ve `.hl` için değerler tanımlayalım:
+
+```css
+:root {
+  --base: #ffc600; /* hem resmin arka plan rengi hem de hl sınıfının yazı rengi olarak kullanılacak renk */
+  --spacing: 10px;
+  --blur: 10px; /* resme uygulanacak blur filtresinin değeri */
+}
+
+img {
+  padding: var(--spacing);
+  background: var(--base);
+  filter: blur(var(--blur));
+}
+
+.hl {
+  color: var(--base);
+}
+```
+
+![CSS değişken](/images/css-degisken-1.webp)
+Görüleceği gibi ortak olarak kullanılan `base` değişkeni sayesinde hem resmin arkaplan rengi hem de `hl` sınıfındaki yazı rengi aynı değere sahip.
+
+## 2. JS ile değişkenleri değiştirmek
+
+HTML dosyasını incelediğimizde 3 inputumuzun olduğunu görüyoruz. Bu inputları JS tarafına bağlayarak güncellendiklerinde CSS değişkenlerini güncelleyelim:
+
+```html
+<script>
+// tüm inputları seçelim
+const inputs = document.querySelectorAll(".controls input");
+
+function updateCSSVariable() {
+  // eğer input'un data-sizing değeri varsa (bizim dosyamızda spacing ve blur inputlarının bu değeri px olarak tanımlı)
+  // suffiximiz bu olacak eğer yoksa da boş bir string olacak
+  // örneğin spacing inputu için suffix = 'px'
+  // base inputu için suffix = ''
+  const suffix = this.dataset.sizing || "";
+
+  // documentElement = html elementimizi şeçer ve root'a tanımladığımız değişkenlere buradan ulaşabiliriz
+  // this.name ile inputun adını , this.value ile inputun güncel değerini aldık ve eğer varsa suffix'i ekledik
+  // örneğin spacing inputumuz 10px olursa aşağıdaki kod bunu yapar:
+  // document.documentElement.style.setProperty(`--spacing`, '10' + 'px');
+
+  document.documentElement.style.setProperty(
+    `--${this.name}`,
+    this.value + suffix
+  );
+}
+// change eventi inputtaki değer her değiştiğinde tetiklenir
+inputs.forEach((input) =>
+  input.addEventListener("change", updateCSSVariable)
+);
+// mousemove eventi input üzerinde fare ile hareket edildiğinde tetiklenir bu sayede faredeki tuşa basılı tutup kaydırıldığında css değişkenleri canlı olarak güncellenecektir
+inputs.forEach((input) =>
+  input.addEventListener("mousemove", updateCSSVariable)
+);
+</script>
+```
+
+### Bu projeden öğrendiklerim
+
+- :root içinde tanımlanmış css değişkenlerini değiştirmek için `document.documentElement.style.setProperty('--degisken-adi','degiskendegeri')` kullanılabilir.
+- event listener eklediğimiz elementteki handler fonksiyonunda `this` ile elementin kendisine erişilebilir.

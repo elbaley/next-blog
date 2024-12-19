@@ -1,0 +1,76 @@
++++
+title= "localStorage ve sessionStorage"
+description = "Webstorage API hakkında temel bilgiler ve kullanım alanları..."
+date= "2022-03-15T15:53:02+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [ "Javascript"
+
+]
+
+draft= false
++++
+
+## Web Storage API
+
+-   Web Storage API, HTML5 sonrasında geleneksel cookielere alternatif olarak oluşturulmuş.
+-   HTML5 öncesinde uygulama verileri cookie içerisinde saklamak ve bu cookie `her server requestinde göndermek` zorundaydık.
+-   Ayrıca cookieler içerisinde saklayabileceğimiz veri boyutu yalnızca `4KB` iken yeni Web Storage API sayesinde en az `5MB`'a kadar boyutta veri saklayabiliyoruz.
+-   Üstelik saklanan verinin `hiçbir zaman serverimze transfer edilmesi gerekmez.`
+-   Webstorage API ile "key : value" biçiminde verileri saklayabiliriz.
+
+Gerçek hayatta kullanımını görmek için [MDN sitesine](https://developer.mozilla.org/en-US/) Chrome ile girdikten sonra Developer Tools > Application > Local Storage bölümüne erişin. Daha sonra dark mode toggleına basarsanız localStorage içerisinde tema tercihinizin saklandığını göreceksiniz.
+
+<video width="100%" controls autoplay loop muted playsinline src="/post/localStorage-ve-sessionStorage/localstorage-example-mdn.mp4" aria-label="MDN sitesindeki localStorage verisi örneği"></video>
+
+### localStorage ve sessionStorage arasındaki fark
+
+-   `sessionStorage` ile saklanan verilere tek bir session boyunca (yani tarayıcı sekmesi kapatılana dek) saklanır.
+-   `localStorage` ile saklanan veriler ise kullanıcı veya siz silmediğiniz sürece sonsuza kadar saklanır. (Sekme veya tarayıcı kapatılsa dahi daha sonra veriye erişebilirsiniz.)
+
+### localStorage ve sessionStorage verisine ulaşma
+
+Her ikisi de `window` objecti içerisinden erişilebildiği için direkt olarak `sessionStorage` veya `localStorage` yazarak erişebilirler.
+
+### Metodlar
+
+#### setItem(key, value)
+
+```jsx
+localStorage.setItem('tema', 'koyu');
+// => localStorage içerisinde tema tercihini kaydettik.
+// ⚠️ Gireceğimiz değerler string olmalı.
+// Eğer string dışında bir değer girersek stringe dönüştürülecektir.
+```
+
+#### getItem(key)
+
+```jsx
+localStorage.getItem('tema');
+// => 'koyu'
+// localStorage'da sakladığımız string değerini almamızı sağlar.
+```
+
+#### removeItem(key)
+
+```jsx
+localStorage.removeItem('tema');
+// Sakladığımız veriyi siler.
+```
+
+#### length
+
+```jsx
+localStorage.length;
+// Sakladığımız değer sayısını döner.
+```
+
+#### clear()
+
+```jsx
+localStorage.clear();
+// Sakladığımız bütün değerleri siler.
+```

@@ -1,0 +1,63 @@
++++
+title= "Javascript 30 - Gün 21"
+description = "Javascript 30 Challenge Proje 21:Javascript ile konumdan şehir ve ülekye erişmek"
+date= "2023-05-19T02:21:03+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"Javascript"
+]
+
+draft= false
++++
+Projenin demosu : [Demo](https://elbaley.github.io/js-30/21/index-solution.html)
+
+Başlangıç dosyalarını bulabileceğiniz repom: [js-30 | github](https://github.com/elbaley/js-30)
+
+Javascript 30 challenge serisinde bugün için [orijinal seride](https://github.com/wesbos/JavaScript30) pusula ve hızı gösteren bir proje yapılması öneriliyordu. Ancak bu proje yalnızca mobil cihazlarda çalıştığından ve her tarayıcıda sorunsuz çalışmamasından dolayı, ben farklı bir proje yapmayı tercih ettim. 
+
+## Amaç
+Bu projede Geolocation API kullanarak  konum izni aldıktan sonra kullanıcının bulunduğu kıta,ülke ve şehir bilgilerini göstereceğiz.
+## Çözümüm
+```html
+<script>
+const result = document.querySelector('#result');
+
+navigator.geolocation.getCurrentPosition((data) => {
+  // enlem boylam bilgisini alalım 
+  const {latitude, longitude} = data.coords
+
+  // api'ya enlem/boylam bilgisiyla istek atalım ve
+  // kıta / ülke / sehir bilgisini alalım 
+  const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      // dönen veriden kıta/ ülke / sehir bilgisini çekelim
+      const {continent, city, countryName} = data
+
+      // dom'a yazılacak metni oluşturalım ve elementi h1 elementinden sonra ekleyelim
+      const resultStr = `${continent} - ${countryName} - ${city}`
+      const resultElement = document.createElement('h2')
+      resultElement.textContent = resultStr
+      result.after(resultElement)
+    })
+
+  console.log(data);
+}, (err) => {
+  // hata olduğunda dom'a hata mesaji yazalım
+  const resultElement = document.createElement('h2')
+  resultElement.textContent = 'Could not find your location!'
+
+  result.after(resultElement)
+
+  console.error(err);
+
+  alert(err.message)
+});
+</script>
+```

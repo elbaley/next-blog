@@ -1,0 +1,83 @@
++++
+title= "React Uygulamasını Github Pages ile Deploy Etme"
+description = ""
+date= "2022-02-10T13:25:27.041Z"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"React"
+]
+
+draft= false
++++
+
+### React Uygulamasının Oluşturulması
+
+React uygulamasını Github Pages üzerinde ücretsiz olarak deploy etmek için öncelikle create-react-app ile React uygulamanızı oluşturun ve uygulamanın oluşturulduğu dizine geçin.
+
+```bash
+npx create-react-app react-uygulamasi
+cd react-uygulamasi
+```
+
+### Github Pages Paketinin Eklenmesi
+
+Github pages paketini dev-dependency olarak projenize ekleyin.
+
+```bash
+npm i gh-pages --save-dev
+```
+
+### Package.json Dosyasının Düzenlenmesi
+
+package.json dosyamıza homepage keyi tanımlayıp değer olarak “http://KULLANICIADINIZ.github.io/REPO-ADINIZ” şeklinde bir string girin.
+
+```json
+"homepage" : "http://KULLANICIADINIZ.github.io/REPO-ADINIZ”,
+```
+
+package.json dosyamızın scripts bölümünün içerisine aşağıdaki iki scripti ekleyelin.
+
+```json
+"scripts": {
+//...
+"predeploy": "npm run build",
+"deploy": "gh-pages -d build"
+}
+```
+
+### Github Reposunun Oluşturulması ve Projeye Bağlanması
+
+![Github Yeni Repo](/post/react-uygulamasini-github-pages-ile-deploy-etme/githubnewrepo.png)
+![Github](/post/react-uygulamasini-github-pages-ile-deploy-etme/github.png)
+
+Github üzerinde package.json dosyasında belirttiğiniz isimde repo oluşturun. Verilen adresi kopyalayın.
+
+React proeninizin bulunduğu dizindeyken eğer git deposu mevcut değilse git init komutunu girdikten sonra kopyaladığınız adresi projenize aşağıdaki komut ile ekleyin.
+
+```bash
+git remote add origin KOPYALADIĞINIZADRES
+```
+
+### Projenin Github Pages ile Deploy Edilmesi
+
+```bash
+npm run deploy
+```
+
+komutunu çalıştırdığında projende “gh-pages” adında bir branch oluşturulacak ve bu branch’e react projenizin build edilmiş dosyaları yüklenecektir.
+
+Dosyalar yüklendikten sonra package.json dosyasında homepage olarak belirttiğin adreste projeni görebilirsin.
+
+### React Projesinin Kodlarının Github’a Aktarılması
+
+React kodlarınızı da Github’da barındırmak istiyorsanız dosyaları commit ettikten sonra github’a pushlayabilirsin.
+
+```bash
+git add .
+git commit -m "commit mesajiniz"
+git push origin master
+```

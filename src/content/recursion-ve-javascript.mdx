@@ -1,0 +1,60 @@
++++
+title= "Recursion ve Javascript"
+description = ""
+date= "2021-12-13T03:03:59+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"Javascript"
+]
+
+draft= false
++++
+
+Recursion ya da dilimizdeki karşılığıyla özyineleme **bir fonksiyonun kendi kendini çağırmasıdır.**
+
+**Recursive Fonksiyon Gereksinimleri**
+
+-   Recursive bir fonksiyon oluşturmak için fonksiyonun durmasını sağlayacak en az bir koşula ihtiyacımız var aksi takdirde fonksiyon sürekli çalışacak ve sonunda hata verecektir. Bu **koşula base case adının verildiğini görebilirsiniz.**
+-   Fonksiyonun kendisini çağırdığı bölüm.
+
+```javascript
+function recursiveFunction() {
+	if (basecondition) {
+		// burada fonksiyonun durmasını istediğimiz koşul yer alıyor
+	} // base condition'ın false olduğu durumda çalışacak fonksiyonumuz burada yer alıyor
+	else {
+		recursiveFunction();
+	}
+}
+```
+
+**Neden?**
+
+Aslında Javascript gibi modern dillerde zaten `for` ve `while` looopları kullanarak recursive functionlar ile elde edeceğimiz sonuçları elde edebiliyoruz. Ancak bazı dillerde herhangi bir loop statement imkanı olmadığından recursive kullanmak zorunlu olabiliyor.
+
+Bunun dışında `for` loop kullanırken fonksiyonun kaç kez çalışacağını bilmemiz gerekiyor. Ancak recursive function ve `while` loop kullandığımızda kodun kaç kez çalışacağını bilmemize gerek yok yalnızca ne zaman duracağını bilmemiz yetiyor.
+
+**Nasıl Çalışıyor?**
+
+Recursive fonksiyonların nasıl çalıştığını anlamak için fonksiyonları verilen inputu işleyen birer makine olarak düşünelim. Recursive bir makine verilen input istenilen koşulu sağlamazsa kendisiyle aynı özellikteki başka bir makineye inputu veriyor. Bu süreç istenilen koşul elde edilene kadar sürüyor ve elde edildiğinde son makineden ilk makineye kadar sonuçlar iletiliyor.
+
+Bu senaryoyu daha iyi kavrayabilmek için çok sık verilen faktöriyel örneğini inceleyebilirsiniz;
+
+```javascript
+function faktoriyel(sayi) {
+	if (sayi === 1) {
+		// base condition
+		return sayi;
+	}
+	//fonsiyonumuzun kendini çağırdığı bölüm
+	return sayi * faktoriyel(sayi - 1);
+}
+```
+
+faktoriyel(3) fonksiyonunu çalıştırdığımızda bu şekilde çalışacak ;
+
+![Faktöriyel Örneği](/post/recursion-ve-javascript/recursive-function.jpg)

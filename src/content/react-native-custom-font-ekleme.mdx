@@ -1,0 +1,88 @@
++++
+title= "React Native Custom Font Ekleme"
+description = ""
+date= "2022-09-22T16:19:20+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"React Native"
+]
+
+draft= false
++++
+
+React Native projelerinde custom font kullanmak eski sürümlere kıyasla çok basitleşti. Bu rehberde özel yazı tiplerini projemize nasıl dahil edebileceğimizi göreceğiz.
+
+1.  Öncelikle projemizi oluşturalım ve App.js dosyamızı bu şekilde dolduralım;
+
+    ##### `App.js`
+
+    ```js
+    import { StyleSheet, Text, View, SafeAreaView } from "react-native";
+    import React from "react";
+
+    const App = () => {
+      return (
+        <SafeAreaView>
+          <Text style={styles.customFont}>Merhaba Dünya!</Text>
+        </SafeAreaView>
+      );
+    };
+
+    export default App;
+
+    const styles = StyleSheet.create({
+      customFont: {
+        //Kendi ekleyeceğiniz font adı ile değiştirin
+        // fontFamily: 'Poppins',
+        textAlign: "center",
+        fontSize: 20,
+      },
+    });
+    ```
+
+    ![](/images/react-native-custom-font-starter.webp)
+
+2.  Kullanmak istediğimiz fontları (Google Fonts veya benzeri sitelerden) indirelim. `PROJE-ANA-DIZINI/assets/fonts` klasörüne indirdiğimiz .tff uzantılı fontları atalım.
+    ![](/images/adding-fonts-to-assets-folder.webp)
+
+3.  Projenizde hali hazırda `react-native.config.js` dosyası yoksa oluşturalım ve içerisine yeni eklediğimiz `assets` klasörünü tanımlayalım.
+
+    ##### `react-native.config.js`
+
+    ```js
+    module.exports = {
+      project: {
+        ios: {},
+        android: {},
+      },
+      assets: ["./assets/fonts/"],
+    };
+    ```
+
+    ![](/images/react-native-config-assets.webp)
+
+4.  React Native 0.69 öncesi sürümlerde aşağıdaki komutu kullanarak `link` işlemini gerçekleştirebiliriz;
+
+    ```shell
+    npx react-native link
+    ```
+
+    React Native 0.69 sürümünde `react-native link` komutu kaldırıldı. Bunun yerine `react-native-asset` komutuyla fontları linkleyebilirsiniz.
+
+    ```shell
+    npx react-native-asset
+    ```
+
+    Bu komutu çalıştırdıktan sonra eklediğiniz fontların Android için `android/app/src/main/assets/fonts` dizinine IOS içinse `Info.plist` dosyasına eklendiğini görebilirsiniz.
+
+    Hepsi bu kadar! Eklediğiniz custom fontu kullanabilmek artık tek yapmanız gereken `fontFamily` olarak eklediğiniz fontun adını girmek. (Projenizi yeniden başlatmanız gerekebilir.)
+
+    ```jsx
+    fontFamily: 'Poppins',
+    ```
+
+    ![](/images/react-native-custom-font-result.webp)

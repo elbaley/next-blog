@@ -1,0 +1,285 @@
++++
+title= "Git'e Giriş"
+description = ""
+date= "2022-07-29T17:35:36+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+    "Genel"
+
+]
+
+
+
+draft= false
++++
+
+Git 2005 yılında Linus Torvalds (aynı zamanda Linux kernelini yazan kişi) tarafından geliştirilen günümüzde oldukça popüler olan açık kaynaklı bir versiyon kontrol sistemidir. Projeniz karmaşıklaştıkça projenin belli bir durumunu kaydetme, yeni bir özellik test ederken projenin çalışır halini saklama, birden fazla kişi ile aynı projede çalışırken kimin ne değişiklik yaptığını takip etme gibi ihtiyaçlar doğacaktır. Git yazılımı, bu ihtiyaçlara cevap vermek için geliştirilmiştir.
+
+#### İçindekiler
+
+<hr>
+
+- [0. Git Ne işe Yarar?](#0-git-ne-işe-yarar)
+- [1. Git Kurulumu](#1-git-kurulumu)
+  - [1.1 Git ve Github](#11-git-ve-github)
+- [2. Repo Kavramı](#2-repo-kavramı)
+  - [2.1 Repo Oluşturmak](#21-repo-oluşturmak)
+- [3. Commit Kavramı](#3-commit-kavramı)
+  - [3.1 Git Projemizin durumunu kontrol etmek](#31-git-projemizin-durumunu-kontrol-etmek)
+  - [3.2 Dosyaları stage etmek](#32-dosyaları-stage-etmek)
+  - [3.3 Commit işlemi](#33-commit-işlemi)
+  - [3.4 Commit geçmişi](#34-commit-geçmişi)
+  - [3.5 gitignore dosyası](#35-gitignore-dosyası)
+- [4. Branch kavramı](#4-branch-kavramı)
+  - [4.1 Branchleri listeleme](#41-branchleri-listeleme)
+  - [4.2 Branch oluşturma](#42-branch-oluşturma)
+  - [4.3 Branchler arası geçiş](#43-branchler-arası-geçiş)
+  - [4.4 Merge işlemi](#44-merge-işlemi)
+  - [4.5 Branch silmek](#45-branch-silmek)
+  <hr>
+
+# 0. Git Ne işe Yarar?
+
+- Projenizi bir `repo` haline getirerek yönetebilmenizi sağlar.
+- Projenizin kopyasını oluşturmaya ve takım arkadaşlarınızla paylaşabilmeye yarar.
+- Projenizdeki her değişikliği rahatça takip edebilirsiniz.
+- Projenizde farklı versiyonlar oluşturabilir bu versiyonları gerektirdiğinde birleştirebilirsiniz.
+
+# 1. Git Kurulumu
+
+Git yazılımını çoğunlukla terminal aracılığıyla kullanırız, ancak bunun için Git'in bilgisayarımızda kurulu olması gerekli. Eğer Mac/Linux kullanıyorsanız yüksek ihtimalle Git yazılımı önceden yüklüdür. Kontrol etmek için terminalde şu komutu çalıştırabilirsiniz:
+
+```shell
+git --version
+```
+
+Eğer yukarıdaki komut ile git versiyonunu görüntüleyemiyorsanız veya Windows kullanıyosanız aşağıdaki linkten sisteminize uygun seçeneği seçerek Git kurulumunu gerçekleştirebilirsiniz:
+[https://git-scm.com/downloads](https://git-scm.com/downloads)
+
+Git kurulumunu tamamladıktan sonra kimliğinizi tanıtmak için aşağıdaki komutları çalıştırın:
+
+```shell
+git config --global user.name "Adınız"
+git config --global user.email "email@adresiniz.com"
+```
+
+## 1.1 Git ve Github
+
+> Yeri gelmişken _Git_ ve _Github_'ın aynı şey **olmadığını** belirteyim. Git başta belirttiğim gibi 2005 yılında
+> piyasaya sürülen açık kaynaklı bir versiyon kontrol sistemi iken, Github 2008 yılında kurulan ve Git repolarımızı barındırma hizmeti sunan bir şirkettir. Kısacası Git'i kullanmak için Github şart değilken, Github'ı Git olmadan kullanamayız.
+
+# 2. Repo Kavramı
+
+`Repository`(genellikle `repo` olarak kısaltılır) Git ile çalışırken aşina olmanız gereken önemli bir terimdir. Dilimize _depo_ olarak çevirebiliriz. Projemizde git'i kullanabilmek için repo oluşturmak şarttır. 2 tür repo bulunmaktadır:
+
+- **Local repository (Yerel depo)**: Adından da anlaşılabileceği gibi kendi bilgisayarımızda oluşturduğumuz repo çeşidine verilen addır. Projemizin yerel versiyonu ile çalışabiliriz.
+- **Remote repository (Uzak depo)**: Kendi bilgisayarımızın dışında başka bir sunucuda sakladığımız repo türüdür. Örneğin Github üzerinde bir repo açarsak bu remote bir repo olur ve başkalarıyla kodumuzu paylaşabilir aynı projede üzerinde çalışabiliriz.
+
+Bu yazı boyunca local repository'ler ile çalışacağız.
+
+## 2.1 Repo Oluşturmak
+
+Yeni bir yerel repo oluşturmak için projemizin bulunduğu dizinde iken aşağıdaki komutu çalıştırmamız yeterlidir:
+
+```shell
+git init
+```
+
+Bu komut projenizin ana dizininde `.git` adında gizli bir klasör oluşturacaktır. Git yazılımı projenizdeki tüm değişiklikleri bu klasör altında saklayacaktır.
+
+# 3. Commit Kavramı
+
+Git ile çalışırken projemizde geri dönmek isteyeceğimiz noktalar yaratmak için `commit`ler oluştururuz. Commitleri bilgisayar oyunlarındaki checkpointlere benzetebiliriz. Git ile sınırsız sayıda commitler oluşturabilir ve bunlar arasında istediğiniz zaman geçiş yapabilirsiniz.
+
+Genellikle projemizde anlamlı değişiklikler yaptığımızda ve bunları kaybetmek istemediğimizde commit işlemi yapmamız gerekir.
+
+Şimdi git ile commit işlemi yapmaya başlayalım:
+
+## 3.1 Git Projemizin durumunu kontrol etmek
+
+Commitleme işlemine başlamadan önce repomuzu oluşturduğumuz klasöre herhangi bir dosya ekleyelim (Ben örnek olarak bir app.js dosyası ekledim.). Sonrasında Git ile çalışırken sıklıkla kullanılan ve git projemizin şu anki durumunu görmemizi sağlayan komutu girelim.
+
+```shell
+git status
+```
+
+![Git status](/images/git-status-ornek.webp)
+
+> `git status` komutunu her çalıştırdığınızda git reponuz hakkındaki önemli bilgileri bu şekilde alabiliriz.
+
+Yukarıda görebileceğiniz gibi `git status` komutunu çalıştırdığımda:
+
+`main` branchinde olduğumu (yazının devamında bu kavram üzerinde duracağım),
+
+- henüz bir commit almadığımı
+- ve son olarak 1 adet `untracked`(izlenmeyen) dosyamın olduğunu bildiriyor.
+
+Git projenizde bir dosyanın `untracked` durumda olması, bu dosyanın git'e **tanıtılmadığı** ve bu dosyadaki hiçbir değişikliğin **takip edilmeyeceği** anlamına gelir.
+
+Git'in takip etmesini istediğimiz dosyaları tanıtmak için bu dosyaları `staging area` denen bir yere eklememiz gerekir.
+
+## 3.2 Dosyaları stage etmek
+
+Staging area dediğimiz alanı aslında dosyalarımızı commitlenmeden önce sakladığımız yer olarak düşünebiliriz. Bir sonraki adımda öğreneceğimiz commit işleminin çalışması için dosyalarımızın bu aşamada olması şarttır aksi takdirde commit komutu commitlenecek bir şey yok diye uyarı verecektir.
+
+Dosyaları stage aşamasına almak için **git add** komutunu kullanmamız gerekir. Bu komut ile eklediğimiz dosyalar artık git tarafından takip edilmeye başlanır ve üzerindeki değişiklikler hakkında bilgi sahibi olabiliriz.
+
+Spesifik olarak bir dosyayı eklemek için bu komutu:
+
+```shell
+git add app.js
+```
+
+Birden fazla dosyayı eklemek için bu komutu:
+
+```shell
+git add app.js app2.js app3.js
+```
+
+Tek tek dosya isimleri ile uğraşmadan proje klasöründeki tüm dosya ve klasörleri eklemek içinse bu komutu kullanabiliriz:
+
+```shell
+git add .
+```
+
+Örnek projemde **git add .** komutunu kullandığımda hiçbir şey olmamış gibi gözükse de yukarıda öğrendiğimiz **git status** komutu ile projemin durumunu kontrol ettiğimde dosyamın staging area'ya eklendiğini teyit edebiliyorum:
+
+![git add](/images/git-add-ornek.webp)
+
+## 3.3 Commit işlemi
+
+Dosyalarımızı **git add** komutuyla ekledikten sonra artık commit almaya (yani projemizin şu anki halini geri dönülebilir bir kayıt noktası haline getirmeye) hazırız.
+
+Commit işlemini gerçekleştirmek için bu komutu kullanmamız yeterli:
+
+```shell
+git commit -m "Projemin ilk versiyonu"
+```
+
+Tırnak içlerine ekleyeceğimiz metin **commit mesajı** olacaktır. İleride çok sayıda commitimiz olduğunda buradaki mesajdan commitlerimizi ayırt etmemize yardımcı olur.
+
+![git commit](/images/git-commit-ornek.webp)
+
+> 📌 Eğer yeni bir commit oluşturmak isterseniz dosyaları stage alanına ekleme ve commit komutuyla commit oluşturma aşamalarını tekrarlamanız gerekir. İstediğiniz aşamada **git status** komutunu kullanarak hangi dosyaların değiştirildiğini, stage alanına eklendiğini veya takip edilip edilmediğini görebilirsiniz.
+
+## 3.4 Commit geçmişi
+
+Projenizdeki tüm commitlerin listesini almak için bu komutu kullanabilirsiniz:
+
+```shell
+git log
+```
+
+![git log](/images/git-log-ornek.jpg)
+Loglarda her commit için; commit sahibinin adı ve emaili,commitin tarih-saat bilgisi ve her commit için özgün olarak üretilen **commit hash**i görebiliriz.
+
+Geçmişteki bir commit'e dönmek için tek yapmanız gereken ilgili commitin hashini kullanarak bu komutu girmektir:
+
+```shell
+git checkout commit-hashiniz
+```
+
+**"commit-hashiniz"** kısmını ilgili commitin hashi ile değistirdiğinizde projenizin o committeki haline geri dönmüş olursunuz.
+
+Eğer projenizin en son haline geri dönmek isterseniz, bu komutu kullanabilirsiniz:
+
+```shell
+git checkout main
+```
+
+Eğer yukarıdaki komut çalışmaz ise (bunun sebebini Branch kavramında açıkladım) aşağıdaki komutu kullanabilirsiniz:
+
+```shell
+git checkout master
+```
+
+## 3.5 gitignore dosyası
+
+Bazen projenizdeki bazı dosya ve klasörlerin git tarafından takip edilmesini isteyemebilirsiniz (örneğin gizli kalmasını isteyeceğiniz verilerinizin olduğu `.env` dosyaları gibi).
+
+Bu durumda projenizin ana dizininde `.gitignore` dosyası oluşturmanız ve bu dosyada takip edilmesini istemediğiniz dosya ve klasörleri belirtmeniz gerekir.
+Örnek bir gitignore dosyası:
+
+```text
+# Gitignore dosyasında yorum yazmak için "#" kullanırız.
+# == Örnekler ==
+# Tek bir dosyayı ignore etmek için:
+/ozel-bilgiler.txt
+# Bir dosya türündeki tüm dosyaları ignore etmek için:
+*.png
+# Bir klasörü ignore etmek için:
+node_modules/
+```
+
+# 4. Branch kavramı
+
+Farz edelim ki tek sayfadan oluşan bir portfolyo siteniz var, bu sitenin üst kısmına projelerinizi listelediğiniz bir resim galerisi eklemek istiyorsunuz ancak galeriyi tamamen bitirip görmeden sitenizin şu anki haline eklemek istemiyorsunuz tam da bu tarz durumlar için **branch**leri kullanabilirsiniz.
+
+Branchler (dilimize yaprak olarak çevirebiliriz) projenizin farklı alt versiyonları gibidir. Yukarıdaki senaryoda kendinize "resimgalerisi" adında bir branch açıp burada resim galerisi özelliğini projenize ekleyip, test ettikten sonra isterseniz projenizin ana branchi ile merge (birleştirme) edebilirsiniz. Bu sayede emin olmadığınız özellikleri güvenli bir ortamda test etmiş olursunuz.
+
+> Git projelerinde ana branch için geleneksel olarak **master** kelimesi kullanılırdı. Ancak 2020 yılında master / slave terimleri çağrışımları sebebiyle incitici bulundu ve yıllardır varsayılan isim olan master yerini **main**e bıraktı. Bu sebeple artık yeni git repoları oluşturduğunuzda veya Github üzerinden bir repo oluşturduğunuzda ana reponuzun adı **main** olacaktır. Tabii bu tercihe bağlı isterseniz ana branchinizin adını dilediğiniz gibi değiştirebilirsiniz.
+
+## 4.1 Branchleri listeleme
+
+Projenizdeki branchleri görmek için bu komutu kullanabilirsiniz:
+
+```shell
+git branch
+```
+
+![git branch](/images/git-branch-ornek.webp)
+Yukarıdaki örnekte herhangi bir branch açmadığım için yalnızca varsayılan branch olan **main**i görüyorum.
+
+## 4.2 Branch oluşturma
+
+Yeni bir branch oluşturmak için bu komutu kullanabilirsiniz:
+
+```shell
+git branch branch-adiniz
+```
+
+**"branch-adiniz"** kısmını istediğiniz branch adı ile değiştirdiğinizde ilgili isimde yeni bir branch oluşturulacaktır.
+
+## 4.3 Branchler arası geçiş
+
+Branchler arasında geçiş yapmak için **git checkout** komutunu kullanabilirsiniz:
+
+```shell
+git checkout branch-adiniz
+```
+
+Ana branche geri dönmek içinse bu komutu kullanabilirsiniz:
+
+```shell
+git checkout main
+```
+
+## 4.4 Merge işlemi
+
+Yeni bir özelliği test edip geliştirdiğiniz bir branch olduğunu varsayalım. Artık bu yeni özelliği ana branchinize eklemek istiyorsanız **git merge** komutunu kullanmalısınız.
+
+Ana branchte olduğunuzdan emin olduktan sonra (git status komutu ile kontrol edebilirsiniz), aşağıdaki komut ile branchleri birleştirebilirsiniz.
+
+```shell
+git merge birlestirmek-istediginiz-branch-adi
+```
+
+## 4.5 Branch silmek
+
+Artık bir branche ihtiyacınız kalmadığında ilgili branchi silmek için **git branch** komutunu **-d** flagiyle çalıştırmanız yeterlidir:
+
+```shell
+git branch -d silmek-istenilen-branch-adi
+```
+
+### Referanslar
+
+[🔗 Introduction to Git](https://www.notion.so/zarkom/Introduction-to-Git-ac396a0697704709a12b6a0e545db049)
+
+[🔗 Git and Github Tutorial for Beginners](https://product.hubspot.com/blog/git-and-github-tutorial-for-beginners)
+
+[🔗 Git Intro - W3C](https://www.w3schools.com/git/git_intro.asp?remote=github)

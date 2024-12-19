@@ -1,0 +1,113 @@
++++
+title= "Javascript 30 - Gün 8"
+description = "Javascript 30 Challenge Proje 8: HTML5 Canvas ile çizim projesi."
+date= "2023-04-03T16:00:59+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"Javascript"
+]
+
+draft= false
++++
+
+HTML5 Canvas, çizim/animasyon ve diğer görsel efektler için kullanılabilecek bir API'dır. Bugünkü projede canvas API kullanarak fare ile çizim yapılabilen basit bir proje oluşturacağız.
+
+Projenin demosu : [Demo](https://elbaley.github.io/js-30/08/index-solution.html)
+
+Başlangıç dosyalarını bulabileceğiniz repom: [js-30 | github](https://github.com/elbaley/js-30)
+
+### Çözümüm
+
+```html
+<script>
+// canvas elementini seçer
+const canvas = document.querySelector('#draw');
+// getContext metodu  çizim alanı elde eder
+const ctx = canvas.getContext('2d');
+// canvas'ın genişlik/ yüksekliğini pencereanin genişlik yüksekliği kadar yapar
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+// çizgi stilini (renk, uç, kalınlık) ayarlar
+ctx.strokeStyle = '#BADA55';
+ctx.lineJoin = 'round';
+ctx.lineCap = 'round';
+ctx.lineWidth = 100;
+
+// fırça hareketlerini takip etmek için kullanılan değişkenleri oluşturur
+let isDrawing = false;
+let lastX = 0;
+let lastY = 0;
+let hue = 0;
+let direction = true;
+
+function draw(e) {
+  if (!isDrawing) return; // fareye tıklanmadıysa çizim yapmayı durdurur 
+  // çizginin rengini belirler
+  ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+  ctx.beginPath();
+  // çizgi başlangıç noktası
+  ctx.moveTo(lastX, lastY);
+  // çizgi bitiş noktası 
+  ctx.lineTo(e.offsetX, e.offsetY);
+  ctx.stroke();
+  // çizginin son x,y bilgisi günceller böylece çizmeye devam edildiğinde kalınan yerden devam eder
+  [lastX, lastY] = [e.offsetX, e.offsetY];
+
+  // hue değeri arttırarak her fırça vuruşunun farklı bir renk olmasını sağlar 
+  hue++;
+
+  if (hue >= 360) {
+    hue = 0;
+  }
+
+  // direction değişkeni kullanarak çizgi kalınlığının 1 - 100 aralığında olmasını sağlar
+  if (ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
+    direction = !direction;
+  }
+
+  // çizgi kalınlığını arttırır/ azaltır
+  if(direction) {
+    ctx.lineWidth++;
+  } else {
+    ctx.lineWidth--;
+  }
+
+}
+
+canvas.addEventListener('mousedown', (e) => {
+  isDrawing = true;
+  [lastX, lastY] = [e.offsetX, e.offsetY];
+});
+
+// fareyi hareket ettiğinde, draw() tetiklenir 
+// ve fırça hareketlerini takip ederek canvas üzerinde çizim yapar.
+canvas.addEventListener('mousemove', draw);
+// mouse tuşu serbest bırakıldığında isDrawing=false yapılır böylece canvas'a çizim yapılmaz
+canvas.addEventListener('mouseup', () => isDrawing = false);
+// mouseout olayı mouse çerçeveden çıktığında tetiklenir böylece canvas dışına çıkılıp geri gelindiğinde çizmeye devam etmez
+// bu olay dinlenmezse örneğin çizime başlanıp ctrl+tab ile başka bir sekmeye gidip geri gelindiğinde çizim işlemi devam eder
+canvas.addEventListener('mouseout', () => isDrawing = false);
+
+</script>
+```
+
+### Bu projeden öğrendiklerim
+- `"mouseout"` olayı fare imleci hedef elementten çıktığında tetiklenir.
+- `"mouseup"` olayı fare tuşu bırakıldığında tetiklenir.
+- [Destructuring assignment](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment) sayesinde iki değişkene değer atanabilir.
+```js
+let bakiye, maas;
+bakiye = 100;
+maas = 200;
+
+//yerine 
+
+let bakiye,maas;
+[bakiye,maas] = [100,200]
+
+```
+ 

@@ -1,0 +1,185 @@
++++
+title= "Javascript Tarihlerle Çalışma"
+description = ""
+date= "2022-05-30T14:37:09.861Z"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"Javascript"
+]
+
+draft= false
++++
+
+Javascript kullandığımız projelerde tarihlerle çalışmak kimi zaman karmaşık bir hal alabiliyor ve Moment.js / days.js gibi kütüphaneler kullanabiliyoruz. Ancak her zaman için kütüphaneleri kullanmamıza gerek yok. Javascriptte yerleşik olarak sunulan `Date object` tarih ve zamanlarla ilgili işlemler için çok güçlü araçlar sunuyor.
+
+## Tarih Oluşturma Seçenekleri
+
+### Date Object kullanarak yeni bir tarih oluşturmak
+
+```jsx
+new Date();
+```
+
+Yukarıdaki örnek şimdiki zamanı işaret eden bir Date object oluşturur.
+
+![JS new Date](/post/javascript-tarihlerle-calisma/js-new-date.png)
+
+Javascript’te tarihler 1 Ocak 1970’den beri geçen milisaniye ile ifade edilir.
+
+```jsx
+new Date("1999-01-01");
+```
+
+### String kullanarak Tarih Oluşturmak
+
+Eğer Date objectinin içerisine uygun bir string eklersek string otomatik olarak parse edilir.
+
+```jsx
+// ISO 8601 Extended format standardı
+`YYYY-MM-DDTHH:mm:ss.sssZ`;
+
+new Date("2022-01-01");
+new Date("2022-02"); // 1 Şubat 2022 , 00:00:00
+new Date("2022"); // 1 Ocak 2022, 00:00:00
+new Date("June 2022"); // 1 Haziran 2022, 00:00:000
+new Date("March 10, 2022"); // 10 Mart 2022, 00:00:00
+```
+
+`Date.parse` metodunu kullanarak tarih stringinden timestamp (milisaniye cinsinden) elde edebiliriz.
+
+```jsx
+Date.parse("2022-01-01"); // 1640995200000
+Date.parse("2022-02"); // 1643673600000
+Date.parse("2022"); // ...
+Date.parse("June 2022"); // ...
+Date.parse("March 10, 2022"); // ...
+```
+
+String kullanarak tarih oluşturmanın çok önemli bir dezavantajı bulunuyor. Varsayılan olarak eğer zamanı belirtmezseniz UTC saat diliminde bir tarih oluşturmuş oluyorsunuz. Bu yüzden farklı saat dilimlerine sahip cihazlarda farklı tarihler görebilirsiniz ve karmaşıklık çıkabilir.
+Örneğin;
+
+```jsx
+new Date("2022-01-01");
+```
+
+Yukarıdaki tarihi oluşturup konsolda incelersek, eğer UTC saat diliminden ileride bir ülkede 1 Ocak 2022 tarihini , UTC saat diliminin gerisindeki bir ülkede ise 31 Aralık 2021 tarihini gördüğümüzü fark edeceksiniz.
+
+![JS String Date](/post/javascript-tarihlerle-calisma/js-string-date.png)
+
+(Google Chrome ile Developer Tools > More Tools > Sensors bölümünden konumumuzu değiştirerek test edebiliriz)
+
+![JS Timezone](/post/javascript-tarihlerle-calisma/js-timezone.png)
+
+Bu tür karışıklıklardan kaçınmak için string ile Date object yaratılmaması önerilmiyor. Bunun yerine parametreler kullanarak Date object oluşturabiliriz.
+
+### Tarih Parametreleri kullanarak Tarih Oluşturmak
+
+Tarihin her bir parçasını ayrıca ekleyerek de Date object oluşturabiliriz. Sırasıyla yıl , ay _(aylar 0 indexed olduğundan 0 Ocak ayını temsil eder)_, gün, saat, dakika, saniye ve milisaniye parametrelerini belirtebiliriz. Bu şekilde oluşturduğumuz tarihler yerel saat diliminde yaratılacağından kafa karışıklığına sebep olmayacaktır.
+
+Parametrelerin sırası da büyükten küçüğe doğru olduğundan anlaşılır olduğu söylenebilir. Sadece ayların 0’dan başladığını unutmamak gerekiyor.
+
+```jsx
+// 30 Mayıs 2022, 10:15:50
+new Date(2022, 4, 30, 10, 15, 50);
+```
+
+### Timestamp ile Tarih Oluşturmak
+
+Tarihleri 1 Ocak 1970 00:00:00’dan beri geçen milisaniyeyi girerek de oluşturabiliriz.
+
+```jsx
+//30 Mayıs 2022 16:04:05
+new Date(1653915845158);
+```
+
+Herhangi bir tarihin timestamp’ini almak için getTime metodunu kullanabiliriz.
+
+```jsx
+new Date("2022-01-01").getTime(); // 1640995200000
+```
+
+Şimdiki zamanın timestamp değerini almak içinse Date.now() kullanabiliriz.
+
+```jsx
+Date.now();
+```
+
+Özetle;
+
+- Herhangi bir parametre girmeden oluşturduğumuz Date object şimdiki tarihi işaret eder.
+- String kullanarak Date object kullanabiliriz ancak saat dilimleri karmaşıklığa sebep olabileceğinden bu yöntemin kullanılmaması öneriliyor.
+- Tarih parametreleri kullanarak tarih oluşturabiliriz. Ayların 0 indexed olması dışında son derece anlaşılır bir yapıya sahip.
+- Timestampler ile tarih oluşturabiliriz.
+
+## Tarih Formatı
+
+Javascript’te yerleşik olarak sunulan tarih formatları çoğu zaman yetersiz kalıyor. Date object ile tarihleri formatlamak için 7 farklı metod sunuluyor:
+
+```jsx
+const tarih = new Date(2022, 4, 30, 17, 10, 45);
+```
+
+- `toString` = 'Mon May 30 2022 17:10:45 GMT+0300 (GMT+03:00)’
+- `toDateString` = 'Mon May 30 2022’
+- `toLocaleString` = '5/30/2022, 5:10:45 PM’
+- `toLocaleDateString` = '5/30/2022’
+- `toGMTString` = 'Mon, 30 May 2022 14:10:45 GMT’
+- `toUTCString` = 'Mon, 30 May 2022 14:10:45 GMT’
+- `toISOString` = '2022-05-30T14:10:45.000Z’
+
+Bunlar işinize yaramıyorsa (ki çoğu zaman yaramayacaktır belki toISOString metodundan elde ettiğiniz stringin belirli bir kısmından sonraki kısmını keserek ‘YIL-AY-GÜN’ şeklinde bir format elde etmek dışında) kendi formatınızı oluşturmak zorundasınız.
+
+Örneğin ‘30 Mayıs Pazartesi, 2022’ şeklinde bir format oluşturmak için Date objectin sunduğu metodları kullanarak her bir parçayı elde etmeli ve bunları birleştirmeliyiz.
+
+1. `getFullYear` : Bu metod ile 4 rakamdan oluşan yılı elde ederiz.
+2. `getMonth` : 0-11 arasında ay değerini elde ederiz.
+3. `getDate` : 1-31 arasında gün değerini elde ederiz.
+4. `getDay`: 0-6 arasında haftanın günü değerini elde ederiz.
+
+Yukarıdaki metodlara baktığımızda ay ve gün isimlerini direkt olarak elde edemeyeceğimizi görebiliriz. Bu yüzden ay ve gün isimleri için array oluşturmamız gerekiyor.
+
+```jsx
+// Ay isimlerini elde etmek için ay isimlerini içeren bir array oluşturalım.
+const aylar = [
+  "Ocak",
+  "Şubat",
+  "Mart",
+  "Nisan",
+  "Mayıs",
+  "Haziran",
+  "Temmuz",
+  "Ağustos",
+  "Eylül",
+  "Ekim",
+  "Kasım",
+  "Aralık",
+];
+// Gün isimlerini elde etmek için gün isimlerini içeren bir array oluşturalım.
+const gunler = [
+  "Pazartesi",
+  "Salı",
+  "Çarşamba",
+  "Perşembe",
+  "Cuma",
+  "Cumartesi",
+  "Pazar",
+];
+
+const tarih = new Date(2022, 4, 30);
+const yil = tarih.getFullYear(); // 2022
+const ayAdi = aylar[tarih.getMonth()]; // Mayıs
+const gunAdi = gunler[tarih.getDay()]; // Pazartes'
+const gun = tarih.getDate(); // 30
+
+const ozelTarihFormati = `${gun} ${ayAdi} ${gunAdi},${yil}`;
+```
+
+### Referanslar
+
+[https://flaviocopes.com/javascript-dates/](https://flaviocopes.com/javascript-dates/)
+
+[https://css-tricks.com/everything-you-need-to-know-about-date-in-javascript/](https://css-tricks.com/everything-you-need-to-know-about-date-in-javascript/)

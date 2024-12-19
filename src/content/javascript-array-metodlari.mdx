@@ -1,0 +1,231 @@
++++
+title= "Javascript Array Metodları"
+description = "Javascript Array özellikleri ve Array metodları."
+date= "2022-03-07T00:54:26+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [ "Javascript"
+
+]   
+draft= false
++++
+
+## Array Özellikleri
+
+-   Array, değerleri sıralı bir biçimde saklamamızı sağlar.
+-   Array içerisindeki her değer bir element'tir ve her elementin bir index'i bulunur.
+-   Bir array içerisinden birden fazla veri tipinde değerler kullanabiliriz. Mesela number,string ve boolean değerleri tek bir array içerisinde saklayabiliriz.
+-   Javascript'te array oluştururken önceden boyutunu belirtmemize gerek yoktur, dinamik bir şekilde büyüyebilir.
+-   Arrayler mutable'dir. Değerleri değiştirilebilir.
+
+## Array Tanımlama
+
+Javascript'te array tanımlamak için Array constructor kullanabileceğimiz gibi [] square bracketsler ile de array tanımlayabiliriz.
+
+```jsx
+const testArray = new Array(); // array constructor ile array tanımlama
+const denemeArray = []; // square bracket ile array tanımlama
+
+console.log(testArray); // => [] (boş bir array)
+console.log(denemeArray); //  => [] (boş bir array)
+const besElemanliArray = new Array(5); // Array constructor içerisine eklediğimiz 5 değeri 5 elemanlı bir array oluşturmamızı sağlar.
+```
+
+Değerleri önceden bildiğimiz arrayler tanımlamak için [] square bracketlerin içine değerleri virgülle ayırarak eklemeliyiz.
+
+```jsx
+const istanbulIlceler = ['Avcılar', 'Kadıköy', 'Beşiktaş', 'Sarıyer'];
+const birdenFazlaVeriTipiIcerenArr = ['String', true, 23];
+```
+
+Array'deki değerlere erişmek için indexlerini kullanabiliriz.
+
+```jsx
+const takimlar = ['Beşiktaş', 'Fenerbahçe', 'Galatasaray'];
+console.log(takimlar[0]); // => Beşiktaş konsola yazılacaktır.
+```
+
+Array'deki değerleri değiştirebiliriz.
+
+```jsx
+const renkler = ['Mavi', 'Beyaz', 'Gri'];
+renkler[0] = 'Siyah';
+console.log(renkler); // =>  ['Siyah', 'Beyaz', 'Gri']
+```
+
+## Array Metodları
+
+### push
+
+Array'in sonuna bir değer ekler.
+
+```jsx
+const sayilar = [1, 2, 3];
+sayilar.push(4);
+console.log(sayilar); // => [1,2,3,4]
+```
+
+### pop
+
+Array'in sonundaki değeri siler.
+
+```jsx
+const sayilar = [1, 2, 3, 4];
+sayilar.pop();
+console.log(sayilar); // => [1,2,3]
+```
+
+### shift
+
+Array'in başındaki değeri siler.
+
+```jsx
+const sayilar = [1, 2, 3, 4];
+sayilar.shift();
+console.log(sayilar); // => [2,3,4]
+```
+
+### unshift
+
+Array'in başında bir değer ekler.
+
+```jsx
+const sayilar = [1, 2, 3, 4];
+sayilar.unshift(0);
+console.log(sayilar); // => [0,1,2,3,4]
+```
+
+### length
+
+Arraydeki toplam değer sayısını verir.
+
+```jsx
+const sayilar = [1, 2, 3, 4];
+console.log(sayilar.length); // => 4
+```
+
+### indexOf
+
+Parametre olarak girilen değer eğer arrayda bulunuyorsa arraydeki ilk index'ini verir. Eğer girilen değer array içerisinde yoksa -1 döner.
+
+```jsx
+const meyveler = ['elma', 'armut', 'erik'];
+console.log(meyveler.indexOf('armut')); // => 1
+console.log(meyveler.indexOf('erik')); // => 2
+console.log(meyveler.indexOf('kiraz')); // => -1
+```
+
+### lastIndexOf
+
+Parametre olarak girilen değer eğer arrayda bulunuyorsa arraydeki son index'ini verir. (Array'de arama tersten başlar.) Eğer girilen değer array içerisinde yoksa -1 döner.
+
+```jsx
+const hayvanlar = ['köpek', 'kedi', 'fare', 'köpek'];
+console.log(hayvanlar.lastIndexOf('köpek')); // => 3
+console.log(hayvanlar.lastIndexOf('fare')); // => 2
+console.log(hayvanlar.lastIndexOf('ayı')); // => -1
+```
+
+### includes
+
+Parametre olarak girilen değer eğer arrayda bulunuyorsa true, bulunmuyorsa false döner.
+
+```jsx
+const hayvanlar = ['köpek', 'kedi', 'fare', 'köpek'];
+console.log(hayvanlar.includes('köpek')); // => true
+console.log(hayvanlar.includes('fare')); // => true
+console.log(hayvanlar.includes('ayı')); // => false
+```
+
+### reverse
+
+Array'in sıralamasını tersine çevirir.
+
+```jsx
+const ogrenciler = ['Ahmet', 'Yeliz', 'Berna', 'Kaan'];
+
+const ogrencilerReversed = ogrenciler.reverse();
+
+console.log(ogrencilerReversed); // => ['Kaan', 'Berna', 'Yeliz', 'Ahmet']
+```
+
+### sort
+
+Array'in sıralamasını UTF-16 değerlerine göre sıralar. (Eğer sayıları sıralamak istiyorsak callback function kullanmamız gerekir.)
+
+```jsx
+const ogrenciler = ['Ahmet', 'Yeliz', 'Berna', 'Kaan'];
+
+const ogrencilerSorted = ogrenciler.sort();
+
+console.log(ogrencilerSorted); // => ['Ahmet', 'Berna', 'Kaan', 'Yeliz']
+```
+
+### slice
+
+Bu metod iki parametre alır: `baslangıçIndexi` ve `bitişIndexi`. Verilen index aralığındaki değerlerden oluşan `yeni bir array` döner. Orijinal array `değişmez`.
+
+```jsx
+const ogrenciler = ['Ahmet', 'Yeliz', 'Berna', 'Kaan'];
+
+console.log(ogrenciler.slice(1));
+// => ['Yeliz', 'Berna', 'Kaan']
+//(Başlangıç indexi olarak 1 girdiğimiz için 0 indexe sahip olan 'Ahmet' arraye dahil edilmedi.)
+console.log(ogrenciler.slice(1, 3));
+// => ['Yeliz', 'Berna']
+//(Başlangıç indexi olarak 1 ve bitiş indexi olarak 3 girdiğimiz için 0 indexine sahip olan 'Ahmet' ve 3 indexine sahip olan 'Kaan' arraye dahil edilmedi.)
+console.log(ogrenciler.slice(-2));
+// => ['Berna', 'Kaan']
+// Negatif bir başlangıç indexi vererek arraydeki son 2 değeri elde ettik.
+```
+
+### splice
+
+splice metodu bir arraydeki belirli değerleri silmeye ve/veya yeni değerler eklemeyi sağlar. slice metodunun aksine `orijinal arrayin değerini değiştirir`. Metod her zaman (eğer varsa) silinen değerleri içeren bir array döner.
+
+```jsx
+const ogrenciler = ['Ahmet', 'Yeliz', 'Berna', 'Kaan'];
+
+console.log(ogrenciler.splice(2, 1));
+// => ['Berna']
+//Başlangıç indexi olarak 2, silinecek değer sayısı olarak da 1 girdiğimiz için 'Berna' değerinden başlayarak 1 değer sildi ve sildiği değeri içeren bir arrayi döndü.
+console.log(ogrenciler);
+// => ['Ahmet', 'Yeliz', 'Kaan']
+// Array değişti ve Berna silindi.
+
+const sayilar = [1, 2, 3, 4];
+console.log(sayilar.splice(3, 1, 5));
+// => [4]
+//Başlangıç indexi olarak 3, silinecek değer sayısı olarak da 1 girdiğimiz için '4' değerinden başlayarak 1 değer sildi ve sildiği değeri içeren bir arrayi döndü. Daha sonra eklediğimiz '5' değerini ise sildiğimiz yerden başlayarak array'e ekledi.
+console.log(sayilar);
+// => [1, 2, 3, 5]
+// Array değişti, 4 silindi ve 5 eklendi.
+```
+
+### concat
+
+2 veya daha fazla arrayi birleştirir. `Orijinal arrayi değiştirmez`, yeni bir array döner.
+
+```jsx
+const meyveler = ['elma', 'armut', 'portakal'];
+const sebzeler = ['maydanoz', 'biber', 'patlıcan'];
+const meyveVeSebzeler = meyveler.concat(sebzeler);
+console.log(meyvelerVeSebzeler);
+// =>['elma', 'armut', 'portakal', 'maydanoz', 'biber', 'patlıcan']
+```
+
+### Array.isArray
+
+Parametre olarak girilen değerin Array olup olmadığını belirler.
+
+```jsx
+const meyveler = ['elma', 'armut', 'portakal'];
+const PI = 3.14;
+console.log(Array.isArray(meyveler));
+// => true
+console.log(Array.isArray(PI));
+// => false
+```

@@ -1,0 +1,134 @@
++++
+title= "Javascript 30 - Gün 29"
+description = "Javascript 30 Challenge Proje 29: Javascript ile sayaç yapalım"
+date= "2023-06-11T02:38:40+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"Javascript"
+]
+
+draft= false
++++
+Projenin demosu : [Demo](https://elbaley.github.io/js-30/29/index-solution.html)
+
+Başlangıç dosyalarını bulabileceğiniz repom: [js-30 | github](https://github.com/elbaley/js-30)
+
+## Amaç
+Bugün için JS ile geri sayım sayacı oluşturacağız.Sayaç önceden tanımlanmış butonlarla başlatılacağı gibi input ile de başlatılabilecek.
+
+## Çözüm
+**HTML**:
+```html
+<div class="timer">
+  <div class="timer__controls">
+    <button data-time="20" class="timer__button">20 Secs</button>
+    <button data-time="300" class="timer__button">Work 5</button>
+    <button data-time="900" class="timer__button">Quick 15</button>
+    <button data-time="1200" class="timer__button">Snack 20</button>
+    <button data-time="3600" class="timer__button">Lunch Break</button>
+    <form name="customForm" id="custom">
+      <input type="text" name="minutes" placeholder="Enter Minutes">
+    </form>
+  </div>
+  <div class="display">
+    <h1 class="display__time-left"></h1>
+    <p class="display__end-time"></p>
+  </div>
+</div>
+
+<audio src="./mixkit-classic-clock-gong-1066.wav" />
+```
+**Javascript**:
+```js
+// setInterval'ın referansını saklayacağımız değişken
+let countdownInterval = null;
+// DOM elementlerimiz
+const timerDisplay = document.querySelector('.display__time-left')
+const endTime = document.querySelector('.display__end-time')
+const buttons = document.querySelectorAll('[data-time]')
+const audio = document.querySelector('audio')
+// <form name="customForm" id="custom">
+// form elementimiz "customForm name attribute'una sahip olduğu için 
+// document.querySelector('#custom" yerine 
+// aşağıdaki şekilde seçebiliriz
+// üstelik bu form içinde yer alan inputumuza da form.minutes ile erişebiliriz
+const form = document.customForm
+
+
+function countdown(seconds) {
+  // varolan bir sayaç varsa onu silelim 
+  // aksi takdirde birden fazla sayaç olacaktır
+  clearInterval(countdownInterval)
+
+  //fonksiyon başladığı andaki tarihi ve bitmesi gereken tarihi tanımlayalım
+  const now = Date.now()
+  const then = now + seconds * 1000
+
+  // kalan zamanı göstermeye yarayan fonksiyonu çağıralım
+  displayTimeLeft(seconds);
+  // bitiş tarihini göstermeye yarayan fonksiyonu çağıralım
+  displayEndTime(then)
+
+  countdownInterval = setInterval(() => {
+    const secondsLeft = Math.round((then - Date.now()) / 1000)
+    // saniye 0'dan küçük olduğunda sayacı durduralım
+    // ve sesi oynatalım
+    if (secondsLeft < 0) {
+      audio.play()
+      clearInterval(countdownInterval)
+      return
+    }
+    // her saniye kalan zamanı güncelleyelim
+    displayTimeLeft(secondsLeft);
+
+  }, 1000)
+}
+
+//kalan zamanı gösteren fonksiyon
+function displayTimeLeft(seconds) {
+  // Math.floor ile artık saniyeleri dikkate almadan tam dakikaları bulalım
+  const minutes = Math.floor(seconds / 60);
+  // artık saniyeleri saklayalım
+  const remainderSeconds = seconds % 60;
+
+  // kalan sürenin gösterileceği formatı ayarlayalım
+  const display = `${minutes}:${remainderSeconds < 10 ? '0' : ''}${remainderSeconds}`
+
+  //sayfanın başlığını ve zamanı gösterdiğimiz elementin içeriğini güncelleyelim
+  document.title = display
+  timerDisplay.textContent = display
+}
+
+// bitiş zamanını gösteren fonksiyon
+function displayEndTime(timestamp) {
+  const end = new Date(timestamp)
+  const hour = end.getHours()
+  const minutes = end.getMinutes();
+  endTime.textContent = `Be back at ${hour > 12 ? hour - 12 : hour}:${minutes < 10 ? '0' : ''}${minutes}`
+}
+
+
+// butonlara tıklandığında sayaç başlatacak fonksiyon
+function startTimer() {
+  const seconds = parseInt(this.dataset.time)
+  countdown(seconds)
+}
+
+
+buttons.forEach(button => button.addEventListener('click', startTimer))
+
+form.addEventListener('submit', function(e) {
+  // formun varsayılan davranışı url'ye parametre ekleyip sayfayı yenilemek olacaktır bunu engelleyelim
+  e.preventDefault()
+  // 'minutes' name'ine sahip inputtan girilen değeri alalım
+  const mins = this.minutes.value
+  // sayacı başlatalım
+  countdown(mins * 60)
+  // sayaç başlatıldıktan sonra form verilerini silelim
+  this.reset()
+})
+```

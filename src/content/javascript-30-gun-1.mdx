@@ -1,0 +1,151 @@
++++
+title= "Javascript 30 - Gün 1"
+description = "Javascript 30 challenge'ının ilk projesi : Javascript ile Drumkit yapmak."
+date= "2023-03-14T14:03:53+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = ["Javascript"
+]
+
+draft= false
++++
+
+Temel Javascript konularını pratiğe dökmek ve React gibi JS kütüphanelerini daha iyi anlayabilmek adına, sadece Javascript kullanarak 30 günde 30 proje içeren Javascript30 kursundaki ilerlememi, öğrendiklerimi paylaşacağım serinin ilk yazısıyla başlıyorum.
+
+Kursun orijinal adresi: [Javascript 30](https://javascript30.com/)
+
+Projeleri beraber takip etmek isterseniz, başlangıç dosyalarını bulabileceğiniz repom: [js-30 | github](https://github.com/elbaley/js-30)
+
+İlk proje oldukça basit ve eğlenceli bir proje. Projenin demosunu [buradan](https://elbaley.github.io/js-30/01/index-solution.html) inceleyebilirsiniz. İsterleri şu şekilde sıralayabiliriz:
+
+1. İlgili tuşa basıldığında eşlesen ses dosyasını oynatmak.
+2. İlgili tuşa basıldığında tuşa yeni bir class atarak stilini değiştirmek ve sonrasında eski haline döndürmek.
+
+Projenin dosya yapısı şu şekilde:
+
+```
+├── background.jpg
+├── index-solution.html
+├── index.html
+├── sounds
+│   ├── boom.wav
+│   ├── clap.wav
+│   ├── hihat.wav
+│   ├── kick.wav
+│   ├── openhat.wav
+│   ├── ride.wav
+│   ├── snare.wav
+│   ├── tink.wav
+│   └── tom.wav
+└── style.css
+```
+
+index.html dosyamızda her bir tuş için aşağıdaki şekilde içerisinde `data-key` attributeı ile basılan tuşun keyCode değerinin belirtildiği bir yapı görüyoruz:
+
+```html
+<div class="keys">
+  <div data-key="65" class="key">
+    <kbd>A</kbd>
+    <span class="sound">clap</span>
+  </div>
+</div>
+```
+
+Dosyanın alt tarafında ise her bir tuşa karşılık `audio` elementi eklendiğini görebiliriz. (Ses dosyaları sayfada görünmüyor bunun sebebi ise `controls` attribute'unun eklenmemiş olmasıdır)
+
+Örneğin "A" tuşu için eklenen ses dosyası şu şekilde belirtilmiş ve aynı keyler için oluşturduğumuz divler gibi burada da data-key değeri olarak tuşun keyCode değeri verilmiş. Bu sayede bir tuşa basıldığında hangi ses dosyasını oynatmamız gerektiğine karar verebiliriz.
+
+```html
+<audio data-key="65" src="sounds/clap.wav"></audio>
+```
+
+## Adım 1: Tuşa basıldığında ilgili ses dosyasını oynatmak
+
+Öncelikle sayfanın herhangi bir yerinde bir tuşa basıldığını algılayabilmek için `window` objesine bir olay dinleyici eklememiz gerekiyor.
+Eklememiz gereken event ise `keydown` eventidir. Bu event klavyede herhangi bir tuşa basıldığında tetiklenecek, ve o tuş hakkında bilgileri verecektir.
+
+```html
+<script>
+  function playSound(e) {
+    // basılan tuş için ekli bir audio dosyası varsa seçelim
+    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+    if (!audio) return;
+    // ses dosyasını her seferinde en baştan başlatalım, aksi takdirde üst üste basıldığında oynatmaya kaldığı yerden devam eder
+    audio.currentTime = 0;
+    audio.play();
+  }
+  window.addEventListener("keydown", playSound);
+</script>
+```
+
+## Adım 2: Tuşa basıldığında ilgili div'in stilini değiştirmek
+
+CSS dosyasını incelediğimizde .key classına sahip elemanlara .playing classını eklersek boyutunun büyüyeceğini ve border renginin değişeceğini görebiliriz.
+
+```css
+/* style.css */
+.key {
+  border: 0.4rem solid black;
+  border-radius: 0.5rem;
+  margin: 1rem;
+  font-size: 1.5rem;
+  padding: 1rem 0.5rem;
+  transition: all 0.07s ease;
+  width: 10rem;
+  text-align: center;
+  color: white;
+  background: rgba(0, 0, 0, 0.4);
+  text-shadow: 0 0 0.5rem black;
+}
+
+.playing {
+  transform: scale(1.1);
+  border-color: #ffc600;
+  box-shadow: 0 0 1rem #ffc600;
+}
+```
+
+Öyleyse yapmamız gerekenler:
+
+- İlgili elementi seçerek `playing` classını eklemek.
+- Sonrasında bu classı silmek.
+  - Bunun için basit bir setTimeout fonksiyonu ile belirli bir süre sonra classı silebiliriz.
+  - Veya `transitionend` olayını dinleyerek ilgili elementte gerçekleşen herhangi bir transition sonunda classı silebiliriz.
+
+```html
+<script>
+  function playSound(e) {
+    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+    // ilgili keyi bulalım
+    const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+    if (!audio) return;
+
+    audio.currentTime = 0;
+    audio.play();
+
+    key.classList.add("playing");
+  }
+  // transition bittiginde ilgili elementten "playing" classını silmeye yarayacak fonksiyonu tanımlayalım
+  function removeOnTransition(e) {
+    if (e.propertyName === "transform") return;
+    e.target.classList.remove("playing");
+  }
+  window.addEventListener("keydown", playSound);
+
+  // keyleri temsil eden divlere transitionend olayı için olay dinleyici ekleyelim
+  // bu sayede bu divlerin herhangi birinde bir transition olayı bittiğinde bu fonksiyon tetiklenecek ve 'playing' classı kaldırılacaktır
+  const keys = document.querySelectorAll(".key");
+  for (const key of keys) {
+    key.addEventListener("transitionend", removeOnTransition);
+  }
+</script>
+```
+
+### Bu projeden öğrendiklerim
+
+- `data-*` attribute'larını kullanarak, HTML elementlerine ekstra bilgi eklenebilir. JavaScript tarafında da bu elementler kolaylıkla seçilebilir.
+- `keydown` eventi klavyede herhangi bir tuşa basıldığında tetiklenir.
+- `transitionend` eventi elementteki herhangi bir transition olayı bittiğinde tetiklenir.

@@ -1,0 +1,116 @@
++++
+title= "Javascript 30 - Gün 13"
+description = "Javascript 30 Challenge Proje 13: Scroll ile Resim Geçişi"
+date= "2023-05-06T03:52:23+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"Javascript"
+]
+
+draft= false
++++
+Javascript ile sayfa kaydırılırken resimlerin gözükmesini sağlayacağız.
+CSS ile resimler varsayılan olarak `opacity` değeri sayesinde gizlenmiş ve translate sayesinde bir miktar yerinden oynatılmış halde. Bu resimlere `.active` sınıfı eklendiğinde geçiş sonrası gözükmeye başlayacaklar.
+
+Projenin demosu : [Demo](https://elbaley.github.io/js-30/13/index-solution.html)
+
+Başlangıç dosyalarını bulabileceğiniz repom: [js-30 | github](https://github.com/elbaley/js-30)
+
+## Çözümüm 
+İlk çözümümde resmin ne zaman gösterileceğini hesaplamak için kursta kullanılan önerildiği gibi scroll edilen piksel miktarı ve resmin büyüklüğünü hesapladım. Sonrasında her scroll olayı gerçekleştiğinde resme `active` sınıfı eklemem gerekiyorsa ekledim silmem gerekiyorsa da sildim. 
+
+Bu çözümde bir debounce fonksiyonu kullandım debounce fonksiyonu ile ilgili daha detaylı bilgiyi kodda paylaştım.
+
+```html
+<script>
+// ============
+// 1. VERSIYON 
+// ============
+// scroll eventini dinlediğimizde 1px bile scroll edildiğinde
+// fonksiyon çalışacaktır bunun önüne geçmek için debounce fonksiyonuna ihtiyacımız var
+// debounce hakkında detaylı bilgi için : https://bit.ly/3M0fgLq
+function debounce(func, wait = 20, immediate = true) {
+  let timeout;
+  return function () {
+    let context = this, args = arguments;
+    let later = function () {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    let callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
+  };
+}
+
+// önce sayfadaki tüm resimleri seçelim
+const sliderImages = document.querySelectorAll(".slide-in")
+
+// scroll işlemi yapıldığında bu fonksiyonumuz çağrılır
+function checkSlide(e) {
+  sliderImages.forEach(sliderImage => {
+    // Resmin sayfanın neresinde göründüğünü kontrol etmek için kullanılır
+    const slideInAt = (window.scrollY + window.innerHeight) - sliderImage.height / 2
+    const imageBottom = sliderImage.offsetTop + sliderImage.height
+    // Resmin yarıda gözüküp gözükmediği ve 
+    // sayfanın altına kadar kaydırılıp kaydırılmadığını kontrol eder
+    const isHalfShown = slideInAt > sliderImage.offsetTop;
+    const isNotScrolledPast = window.scrollY < imageBottom
+    // Eğer resim yarıda gözüküyorsa ve sayfa altına kadar kaydırılmamışsa
+    // resmin üzerinde "active" sınıfını ekler, aksi halde sınıfı kaldırır.
+    if (isHalfShown && isNotScrolledPast) {
+      sliderImage.classList.add('active')
+    } else {
+      sliderImage.classList.remove('active')
+    }
+
+  })
+}
+
+// debounce fonksiyonu sayesinde scroll işlemi sırasında sıkça çağrılmasının önüne geçilir
+// debounce fonksiyonu sayesinde checkSlide fonksiyonu son scrolldan 20ms sonra çalışacak.
+window.addEventListener('scroll', debounce(checkSlide))
+
+</script>
+```
+
+## Çözümüm (Alternatif) 
+Daha önce paylaştığım [Intersection Observer API](https://furkanleba.com/intersection-observer-api/) ile aynı işlevselliği çok daha basit bir şekilde geliştirdim. Bu çözümde bir debounce fonksiyonuna ihtiyacımız kalmıyor. 
+
+```html
+<script>
+// ============
+// 2. VERSIYON
+// ============
+
+// Tüm resimleri seçelim
+const images = document.querySelectorAll(".slide-in");
+
+// IntersectionObserver seçeneklerini oluşturalım
+const options = {
+  threshold: 0.5,// hedef resmin %50'si görünür olduğunda ilgili fonksiyon çalışacaktır.
+};
+
+const observer = new IntersectionObserver(function (entries, observer) {
+  entries.forEach((entry) => {
+    // resmin yarısından fazlası görünür olduğunda 'active' sınıfı eklenir.
+    if (entry.isIntersecting) {
+      entry.target.classList.add("active");
+    } else {
+      // resmin yarısından fazlası görünmez olduğunda 'active' sınıfı silinir.
+      entry.target.classList.remove("active");
+    }
+  });
+}, options);
+
+// tüm resimleri IntersectionObserver ile dinler.
+images.forEach((image) => {
+  observer.observe(image);
+});
+</script>
+```

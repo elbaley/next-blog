@@ -1,0 +1,118 @@
++++
+title= "Javascript 30 - Gün 23"
+description = "Javascript 30 Challenge Proje 23:Javascript ile yazıyı sese dönüştürme"
+date= "2023-05-20T02:41:33+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"Javascript"
+]
+
+draft= false
++++
+Projenin demosu : [Demo](https://elbaley.github.io/js-30/23/index-solution.html)
+
+Başlangıç dosyalarını bulabileceğiniz repom: [js-30 | github](https://github.com/elbaley/js-30)
+
+## Amaç
+Bugün çoğu modern tarayıcıda desteklenen [SpeechSynthesis](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis) yardımıyla yazıyı sese dönüştüreceğiz. 
+
+## Çözüm
+**HTML**:
+
+```html
+<div class="voiceinator">
+
+  <h1>The Voiceinator 5000</h1>
+
+  <select name="voice" id="voices">
+    <option value="">Select A Voice</option>
+  </select>
+
+  <label for="rate">Rate:</label>
+  <input name="rate" type="range" min="0" max="3" value="1" step="0.1">
+
+  <label for="pitch">Pitch:</label>
+
+  <input name="pitch" type="range" min="0" max="2" step="0.1">
+  <textarea name="text">Merhaba! Javascript 23. günde SpeechSynthesisUtterance API kullanarak yazıyı sese çeviriyoruz!
+  </textarea>
+  <button id="stop">Stop!</button>
+  <button id="speak">Speak</button>
+
+</div>
+```
+
+**Javascript**:
+```html
+<script>
+const msg = new SpeechSynthesisUtterance();
+let voices = [];
+const voicesDropdown = document.querySelector('[name="voice"]');
+const options = document.querySelectorAll('[type="range"], [name="text"]');
+const speakButton = document.querySelector('#speak');
+const stopButton = document.querySelector('#stop');
+//varsayılan konuşma metnini ve dilini belirleyelim
+msg.text = document.querySelector('[name="text"]').value;
+msg.lang = "tr-TR"
+
+function populateVoices() {
+  // eğer tarayıcı speechSynthesis desteklemiyorsa fonksiyonu durduralım
+  if (typeof speechSynthesis === 'undefined') {
+    return
+  }
+  // işletim sistemine/ tarayıcıya bağlı olarak değisen uygun sesler alınır
+  voices = speechSynthesis.getVoices();
+  // her bir seçenek için bir option elementi eklenir
+  // debugger;
+  voicesDropdown.innerHTML = voices
+    .map(voice => `<option ${voice.lang === "tr-TR" ? "selected" : ""}  value="${voice.name}">${voice.lang} (${voice.name})</option>`)
+    .join('');
+}
+
+function setVoice() {
+  //sesi ve dili arrayde bulup güncelleyim
+  msg.voice = voices.find(voice => voice.name === this.value);
+  msg.lang = msg.voice.lang
+  toggle();
+}
+
+function toggle(startOver = true) {
+  speechSynthesis.cancel();
+  if (startOver) {
+    speechSynthesis.speak(msg);
+  }
+}
+
+function setOption() {
+  console.log(this.name, this.value);
+  // option elementlerimiz :
+  // 1)<input name="rate" type="range" min="0" max="3" value="1" step="0.1">
+  // 2)<textarea name="text">Hello! I love JavaScript 👍</textarea>
+  // örneğin birinci option değeri değişirse: this.name = 'rate' , this.value =1.5 
+  // örneğin ikinci option değeri değişirse: this.name = 'text' , this.value ='yazı' olur
+  // böylece hem konuşma hızını hem de konuşulacak metni ayarlayabiliriz
+  msg[this.name] = this.value;
+  toggle();
+}
+
+
+//voiceschanged olayı sistemde kullanılabilir ses seçenekleri güncellediğinde tetiklenir
+// safaride voiceschanged olayı sayfa ilk yüklendiğinde chrome'un aksine tetiklenmediği için
+// onvoiceschanged olayının desteklenmediği durumda populateVoices fonksiyonunu manuel olarak çağıralim
+populateVoices()
+if(speechSynthesis.onvoiceschanged !== undefined){
+  speechSynthesis.onvoiceschanged = populateVoices
+}
+// Ses seçimi değiştiğinde seçilen ses güncellenir
+voicesDropdown.addEventListener('change', setVoice);
+options.forEach(option => option.addEventListener('change', setOption));
+// speakButonuna tıklandığında konuşma başlatılır
+speakButton.addEventListener('click', toggle);
+// stopButonuna tıklandığında konuşma durdurulur
+stopButton.addEventListener('click', () => toggle(false));
+</script>
+```

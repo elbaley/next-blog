@@ -1,0 +1,107 @@
++++
+title= "NodeJS ES6 Import Syntax Kullanma"
+description = ""
+date= "2022-04-26T16:35:02+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = ["Node"
+
+]
+
+draft= false
++++
+
+React ve Vue.js gibi frameworklerde dosya ve modülleri projemize eklerken `import` keywordünü kullanıyorken Node.js'de varsayılan olarak bu işlemler için `require` keywordünü kullanmamız gerekiyor.
+
+React:
+
+```js
+import axios from "axios";
+```
+
+Node:
+
+```js
+const axios = require('axios);
+```
+
+Node.js kullanırken import statement kullanmayı denersek şöyle bir hata alırız:
+
+```js
+//app.js
+import axios from "axios";
+```
+
+```shell
+node app.js
+
+(node:40974) Warning: To load an ES module, set "type": "module" in the package.json or use the .mjs extension.
+(Use `node --trace-warnings ...` to show where the warning was created)
+/Users/furkan/Developer/projects/exampleImport/app.js:1
+import axios from "axios";
+^^^^^^
+
+SyntaxError: Cannot use import statement outside a module
+    at Object.compileFunction (node:vm:352:18)
+    at wrapSafe (node:internal/modules/cjs/loader:1027:15)
+    at Module._compile (node:internal/modules/cjs/loader:1063:27)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1153:10)
+    at Module.load (node:internal/modules/cjs/loader:975:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:77:12)
+    at node:internal/main/run_main_module:17:47
+
+Node.js v17.8.0
+```
+
+## package.json Dosyasını Düzenleme
+
+Nodejs ES modülleri için deneysel bir desteğe sahip ancak bunu aktif etmek için hatada da belirtildiği gibi `package.json` dosyamızı değiştirmemiz gerekiyor.
+
+```json
+//package.json
+{
+  "name": "exampleimport",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.1"
+  },
+  // aşağıdaki parametre ile import statement
+  // kullanma özelliğini aktif edebiliriz
+  "type": "module"
+}
+```
+
+## .mjs Dosya Uzantısını Kullanma
+
+import statement kullanabilmek için kullanabileceğimiz bir diğer yol ise dosyamızı `.js` yerine `.mjs` uzantısıyla kaydetmektir.
+
+```shell
+.
+├── app.js
+├── node_modules
+├── package-lock.json
+└── package.json
+
+1 directory, 3 files
+
+// dosya uzantımızı değiştirelim:
+.
+├── app.mjs
+├── node_modules
+├── package-lock.json
+└── package.json
+
+1 directory, 3 files
+
+```

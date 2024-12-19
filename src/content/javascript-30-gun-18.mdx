@@ -1,0 +1,69 @@
++++
+title= "Javascript 30 - Gün 18"
+description = "Javascript 30 Challenge Proje 18:Reduce ile toplam video uzunluğu bulma"
+date= "2023-05-13T15:46:35+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"Javascript"
+]
+
+draft= false
++++
+Projenin demosu : [Demo](https://elbaley.github.io/js-30/18/index-solution.html)
+
+Başlangıç dosyalarını bulabileceğiniz repom: [js-30 | github](https://github.com/elbaley/js-30)
+
+## Amaç
+Elimizde "4:58" gibi bir formatta videoların uzunlukları var. Bunların toplam uzunluğunu bulup "saat:dakika:saniye" cinsinden konsola basmamız gerekiyor. 
+
+## Çözümüm
+```html
+<script>
+// video sürelerinin data-time attribute'unda belirtildiği elementleri seçelim
+// burada her elemanın olduğu bir NodeList dönecektir ancak biz daha sonra
+// bir Array metodu olan .map kullanacağımız için spread operatör ile Array'e dönüştürelim
+const videoTimes = [...document.querySelectorAll('[data-time]')]
+// her elementteki data-time attribute'undan video uzunluk değerini saniye cinsinden arrayde tutalım
+const secondsList = videoTimes.map((video) => {
+  const [mins,seconds] = video.dataset.time.split(':')
+  // burada aldığımız dakika ve saniyeler string olduğundan onları 1 ile çarpıp numbera dönüştürelim
+  return +(mins * 60 + seconds * 1) 
+})
+// artık elimizde her videonun saniye cinsinden uzunluğunun olduğu bir array var reduce ile toplam saniyeyi bulalım
+const totalSeconds = secondsList.reduce((total,sec) => {
+  return total + sec
+},0)
+
+// videoların toplam saniyesi elimizde şimdi bunu saat:dakika:saniye cinsine çevirelim
+// 1. Yol 
+// toplam saniyeyi let ile seconds değişkenine atayalım
+let seconds = totalSeconds
+// bu saniyede kaç saat olduğunu bulalım
+const hours = Math.floor(seconds / 3600)
+// saniyeden saat kadar kısmı çıkaralım
+seconds = seconds % 3600
+// kaç dakika ettiğini bulalım
+const minutes = Math.floor(seconds / 60)
+// kalan saniyeyi bulalım
+seconds = seconds % 60
+
+// sonucu konsola basalım
+console.log(`${hours}:${minutes}:${seconds}`);
+
+// 2. Yol 
+// saniyeyi Date'e çevirip Intl api sayesinde konsola basalım
+const date = new Date(totalSeconds * 1000) 
+const formattedDate = new Intl.DateTimeFormat('tr-TR',{hour:'numeric',minute:'numeric',second:'numeric',timeZone:'UTC'}).format(date)
+console.log(formattedDate);
+
+
+// 3. Yol 
+// saniyeyi Date'e çevirip ISO stringine dönüştürüp hh:mm:ss cinsindeki değeri konsola basalım
+const isoDate = new Date(totalSeconds * 1000).toISOString().slice(11,19)
+console.log(isoDate);
+</script>
+```

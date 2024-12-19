@@ -1,0 +1,75 @@
++++
+title= "Javascript 30 - Gün 20"
+description = "Javascript 30 Challenge Proje 20:Javascrip ile sesi yazıya dönüştürmek"
+date= "2023-05-19T00:27:55+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"Javascript"
+]
+
+draft= false
++++
+Projenin demosu : [Demo](https://elbaley.github.io/js-30/20/index-solution.html)
+
+Başlangıç dosyalarını bulabileceğiniz repom: [js-30 | github](https://github.com/elbaley/js-30)
+
+Bugün tarayıcılarda bulunan [SpeechRecognition](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition) API ile sesi yazıya çevirme projesi geliştireceğiz. 
+
+## Çözüm
+**HTML**:
+```html
+<div class="words" contenteditable>
+</div>
+```
+
+
+
+
+**Javascript**:
+```html
+<script>
+window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+const recognition = new SpeechRecognition();
+recognition.interimResults = true;
+// tanıma dilini Türkçe ayarlayalım
+recognition.lang = 'tr-TR';
+
+let p = document.createElement('p');
+const words = document.querySelector('.words');
+words.appendChild(p);
+
+
+//herhangi bir kelime tanındığında tetiklenecek olay
+recognition.addEventListener('result', e => {
+  //tanınan konuşma parçalarını birleştirerek tek bir stringe dönüştürür
+  const transcript =[...e.results] 
+    .map(result => result[0])
+    .map(result => result.transcript)
+    .join('');
+
+  //oluşturulan metindeki 'kalp' kelimelerini kalp emojisiyle değiştirir
+    const filteredTranscript = transcript.replaceAll('kalp','❤️');
+  // oluşturulan metin paragraf elementine eklenir
+    p.textContent = filteredTranscript;
+
+  //eğer konuşma tamamnlandıysa paragrafı oluşturup sayfaya ekleyelim
+  // konuşmanın tamamlandığını isFinal değeriyle kontrol ediyoruz
+    if (e.results[0].isFinal) {
+      p = document.createElement('p');
+      words.appendChild(p);
+    }
+});
+
+// tanıma işlemi bittiğinde tekrardan dinlemeyi başlatıyoruz
+recognition.addEventListener('end', recognition.start);
+
+// konuşma işlemini sayfa açıldığında başlatıyoruz
+recognition.start();
+
+</script>
+```

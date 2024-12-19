@@ -1,0 +1,121 @@
++++
+title= "Javascript String Özellikleri ve  Metodları"
+description = "Javascript String özellikleri ve String metodları."
+date= "2021-12-15T22:06:43+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"Javascript"
+]
+
+draft= false
++++
+
+## String Özellikleri
+
+-   Metinsel verileri temsil eden Javascript veri türüdür.
+-   Single ya da double quote ile veriler girilir.
+
+    ```jsx
+    let birinciStringOrnek = 'Bu bir string.';
+    let ikinciStringOrnek = 'Bu da bir string.';
+    ```
+
+    > Tek/çift tırnak kullanımının önemi yoktur ancak String tanımlanırken kullanılan tırnak işareti String içerisinde gösterilecekse `escape character "\" ` kullanılmalıdır.
+
+    ```javascript
+    let mesaj = 'Ahmet'ten bir mesajınız var!' // hatalı çünkü tek tırnak işareti string değerimizin içerisinde yer alıyor.
+    let mesaj = 'Ahmet\'ten bir mesajınız var !' // doğru çünkü değerdeki tek tırnak işaretinin önüne escape character ekledik.
+    ```
+
+-   String değerleri `immutable`'dır. Yani bir kez değer verilen string'in değerini daha sonra değiştiremeyiz. Stringler üzerinde işlemler yaptığımızda aslında orijinal stringi değiştirmiyor yalnızca yeni bir kopyasını oluşturuyoruz.
+    ```jsx
+    let selam = 'Merhaba Dünya!';
+    selam.toLowerCase();
+    console.log(selam); // Merhaba Dünya!
+    ```
+    Yukarıdaki örnekte selam değişkeninin değerinin 'merhaba dünya!' olacağını düşünebiliriz ancak aslında kullanılan metod yeni bir String oluşturacak ve varolan String değerimiz değişmeyecektir. Eğer yeni oluşturulan string'e ihtiyacımız varsa yeni bir değişkene atayabiliriz.
+    ```jsx
+    let selam = 'Merhaba Dünya!';
+    let kucukSelam = selam.toLowerCase();
+    console.log(kucukSelam); //merhaba dünya!
+    ```
+-   `+ operatörü`nün sayılarda toplama işlemi yaptığını biliyoruz. Bu operatörü stringler ile kullanırsak **stringleri birleştirir**.
+
+    ```jsx
+    let selam = 'Merhaba ';
+    let isim = 'Mahmut';
+    let mahmutaSelam = selam + isim; // "Merhaba Mahmut" çıktısını alırız.
+    ```
+
+-   Stringleri her bir elementi bir karakter olan `array` gibi ele alarak karakterlere erişebiliriz.
+    ```jsx
+    let selam = 'Merhaba ';
+    selam[0]; // "M";
+    ```
+
+## String Metodları
+
+Örneklerde kullanacağımız stringi tanımlayalım;
+
+```javascript
+let selam = 'Merhaba dünyalı!';
+```
+
+-   Karakterle ilgili metodlar
+
+```javascript
+selam.charAt(0); // "M" => Verilen index değerindeki karakteri verir.
+selam.charCodeAt(0); // "77" => Verilen index değerindeki karakterin
+// Unicode karşılığını verir.
+selam.indexOf('a'); // => "4" verilen değerin ilk bulunduğu pozisyonu verir
+selam.lastIndexOf('a'); // => "12" verilen değerin son bulunduğu pozisyonu verir
+```
+
+-   ES6 ve sonrasında kullanılmaya başlanan Boolean çıktı veren arama fonksiyonları
+
+```javascript
+selam.startsWith('Merhaba'); // => "true" String'in verilen karakterle başlayıp
+// başlamadığını kontrol eder.
+selam.endsWith('!'); // => "true" String'in verilen karakterle bitip
+// bitmediğini kontrol eder.
+selam.includes('dünya'); // => "true" verilen karakterleri içerip
+// içermediğini kontrol eder
+```
+
+-   `+ operatörü` dışında string birleştirme metodu
+
+```javascript
+selam.concat('Nasılsın?'); // => "Merhaba dünyalı!Nasılsın?"
+// 2 ya da daha fazla stringi birleştirir yeni bir string verir
+```
+
+-   Stringlerin belirli bir bölümünü çıktı veren metodlar. slice() ve substring() farkı [^1]
+
+```javascript
+selam.split(' '); // => ["Merhaba","dünyalı!"]
+// Bu metoda girilen ilk parametre seperatordır.
+// " " kullanılırsa boşluk seperator olur ve sözcükleri elde ederiz.
+// Elde edilen verileri array olarak verir.
+selam.slice(8, 13); // => "dünya" istenilen karakter aralığını verir.
+selam.substring(8, 13); // => "dünya" istenilen karakter aralığını verir.
+```
+
+-   String dönüştürme metodları
+
+```javascript
+selam.toLowerCase(); // => "merhaba dünyalı!" küçük harflere dönüştürür
+selam.toUpperCase(); // => "MERHABA DÜNYALI!" büyük harflere dönüştürür
+selam.replace('dünya', 'mars'); // => "Merhaba marslı!"
+```
+
+-   Boşlukları silme metodu
+
+```javascript
+'  Ben bir ceviz ağacıyım.  '.trim(); // => "Ben bir ceviz ağacıyım."
+```
+
+[^1]: [JavaScript substring() vs slice()](https://masteringjs.io/tutorials/fundamentals/substring-vs-slice)

@@ -1,0 +1,23 @@
++++
+title= "Macos Terminal Last Login Yazısını Kaldırma"
+description = "Terminal ilk başlatıldığında çıkan 'Last login' yazısından kurtulma."
+date= "2022-03-31T16:00:48+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [ "macOS"
+
+]
+
+draft= false
++++
+
+iTerm ve benzeri terminal uygulamalarını her başlattığımızda bizi karşılayan sinir bozucu "Last login -tarih bla blah" yazısından kurtulmak için home folderda iken boş bir `.hushlogin` dosyası yaratmamız yeterli.
+
+```shell
+touch .hushlogin
+```
+
+![Faktöriyel Örneği](/post/macos-terminal-last-login-yazisini-kaldirma/last-login.png)

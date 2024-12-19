@@ -1,0 +1,93 @@
++++
+title= "Javascript Switch Case"
+description = ""
+date= "2022-12-02T13:50:42+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+    "Javascript"
+
+]
+
+draft= false
++++
+
+Javascript'teki **switch** yapısı başka dillerde de görülen, verilen expression'ı değerlendirip eşleştiği **case**lerdeki kodları **break** ile karşılaşmadıkça çalıştırmamızı sağlayan bir yapıdır.
+
+## Switch Case nasıl çalışır?
+
+![](/images/js-switch-case-yapisi.webp)
+
+## Switch Case Örneği
+
+```js
+const isim = "Mahmut";
+switch (isim) {
+  case "Mahmut":
+    console.log("Selam Mahmut!");
+    break;
+  case "Ali":
+    console.log("Selam Ali!");
+    break;
+  case "Ayşe":
+    console.log("Selam Ayşe!");
+    break;
+  default:
+    console.log("Selam Yabancı!");
+}
+```
+
+```zsh
+Selam Mahmut!
+```
+
+Yukarıdaki örnekte switch yapısı içerisine eklenen isim expression'ını case'lerde verdiğimiz değerlerle karşılaştırıyor(karşılaştırma yaparken strict comparison kullanılıyor `===`) ve eşleşme durumunda içerisindeki kod bloğu çalışıyor.`break` ile karşılaştığında ise çalışmayı durduruyor.
+
+Switch yapısında break kullanmazsak ilk eşleşmeden sonraki tüm kod blokları çalışacaktır.Örneğin;
+
+```js
+const isim = "Mahmut";
+switch (isim) {
+  case "Mahmut":
+    console.log("Selam Mahmut!");
+  case "Ali":
+    console.log("Selam Ali!");
+  case "Ayşe":
+    console.log("Selam Ayşe!");
+  default:
+    console.log("Selam Yabancı!");
+}
+```
+
+Yukarıdaki kod aşağıdaki çıktıyı verecektir:
+
+```zsh
+Selam Mahmut!
+Selam Ali!
+Selam Ayşe!
+Selam Yabancı!
+```
+
+Switch yapısında birden fazla case için aynı kod bloğunun çalışmasını sağlayabiliriz:
+
+```js
+const secilenHayvan = "Zürafa";
+switch (secilenHayvan) {
+  case "İnek":
+  case "Köpek":
+  case "Zürafa":
+    console.log("Bu hayvanın nesli tükenmedi!");
+    break;
+  case "Dinozor":
+  case "Mamut":
+  default:
+    console.log("Bu hayvanın nesli tükendi!");
+}
+```
+
+```zsh
+Bu hayvanın nesli tükenmedi!
+```

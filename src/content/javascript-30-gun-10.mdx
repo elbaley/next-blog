@@ -1,0 +1,68 @@
++++
+title= "Javascript 30 - Gün 10"
+description = "Javascript 30 Challenge Proje 10:Shift ile Çoklu Seçim"
+date= "2023-04-28T17:45:23+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"Javacscript"
+]
+
+draft= false
++++
+Bugün Gmail vb sitelerden de alışık olduğumuz shift ile çoklu seçim özelliğini geliştirmemiz gerekiyor. 
+
+
+Projenin demosu : [Demo](https://elbaley.github.io/js-30/10/index-solution.html)
+
+Başlangıç dosyalarını bulabileceğiniz repom: [js-30 | github](https://github.com/elbaley/js-30)
+
+## Amaç
+Örneğin birinci checkbox'ı işaretledik ve sonra `Shift` tuşuna basarak 5. checkbox'a tıklandığında 2.,3.,4 ve 5. checkbox'ların işaretlenmesini istiyoruz. 
+
+## Çözümüm
+```html
+<script>
+// Tüm input elementlerini seçiyoruz.
+// Burada spread operatör yardımıyla NodeList'i Array'e çevirdik çünkü bunu yapmasaydık findIndex metodunu kullanamazdık.
+const allInputs = [...document.querySelectorAll(`input`)];
+// İşaretlemeye başlayacağımız checkbox'un başlangıç değerini saklamak için değişken oluşturuyoruz.
+let startingIndex;
+function handleCheck(e) {
+  // Son tıklanan checkbox'un indexini allInputs arrayinde buluyoruz.
+  const currentIndex = allInputs.findIndex((input) => input === e.target);
+
+  // Eğer shift tuşuna basılmamışsa yalnızca startingIndex değerini güncelliyoruz ve fonksiyondan çıkıyoruz.
+  if (!e.shiftKey) {
+    startingIndex = currentIndex;
+    return;
+  }
+
+  // Eğer son tıklanan checkbox ilk tıklanandan sonraysa ilk tıklanandan başlayarak son tıklanana kadar tüm checkboxları işaretliyoruz.
+  if (startingIndex < currentIndex) {
+    allInputs.forEach((input, index) => {
+      if (index < currentIndex && index > startingIndex) {
+        input.checked = true;
+      }
+    });
+  }
+
+  // Eğer son tıklanan checkbox ilk tıklanandan önceyse son tıklanandan başlayarak ilk tıklanana kadar tüm checkbox'ları işaretliyoruz.
+  else {
+    allInputs.forEach((input, index) => {
+      if (index > currentIndex && index < startingIndex) {
+        input.checked = true;
+      }
+    });
+  }
+}
+
+// Her input elementine bir tıklama olayı (click event) ekliyoruz ve tıklama işlemi handleCheck() fonksiyonunda yönetiliyor.
+allInputs.forEach((input) => input.addEventListener("click", handleCheck));    
+</script>
+```
+
+

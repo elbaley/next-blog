@@ -1,0 +1,168 @@
++++
+title= "Intersection Observer API"
+description = ""
+date= "2022-07-26T15:57:00+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"Javascript"
+]
+
+draft= false
++++
+
+## Problem
+
+Javascript ile istenilen elemanın DOM üzerinde görünüp görünmediğini takip etmek geçmişten beri zor bir işti. Bu işlem için 'scroll' eventini dinleyip hedef elemanın DOM üzerindeki konumuna göre aksiyon alıyorduk. Ancak bu yaklaşımda performans sorunları ve istenmeyen davranışlar kaçınılmaz oluyordu. Neyse ki web sitelerinin bu ihtiyaçları geliştikçe bu amaca yönelik bir API geliştirildi.
+
+![Deneme](/images/observer-ornek.jpg)
+Örneğin Element 2 ekranda görünür olduğu anda sitemizin arka planını değiştirmek istiyorsak eskiden izlediğimiz yol şu şekildeydi:
+
+- Element 2'nin DOM'daki konumunu al.
+- 'scroll' eventini izlemeye başla.
+- Scroll konumundan Element 2'nin ekranda görünüp görünmediğini hesapla.
+- Element 2 göründüğünde arka planı değiştir.
+
+Bu yaklaşımda her bir pixellik harekette dahi fonksiyonumuz çalıştığından performans sorunları ile karşılaşabiliriz bunun için optimizasyonlar yapmak zorundayız.
+
+## Çözüm
+
+`Intersection Observer API` kullandığımızda izleyeceğimiz yol şu hale gelir:
+
+- Element 2'yi Intersection Observer ile izlemeye başla ve callback olarak arka planı değiştirecek bir fonksiyon yaz.
+- Element 2 göründüğünde Intersection Observer arka planı değiştirecektir.
+
+## Örnek
+
+Şimdi daha anlaşılır olması için yukarıda resimle gösterdiğimiz senaryoyu koda döküp Intersection Observer API yardımıyla istediğimiz işlemi gerçekleştirmeye çalışalım.
+
+Öncelikle HTML iskeletimizi oluşturalım:
+
+```html
+<main>
+  <div class="element1">ELEMENT 1</div>
+  <div class="element2">ELEMENT 2</div>
+</main>
+```
+
+Sonrasında elemanlarımızı konumlandırmak ve gerekli arka plan renklerini vermek için css tanımlarımızı ekleyelim;
+
+```css
+body {
+  background: white;
+}
+main {
+  height: 100vh; /* ekranın tamamını kaplaması için bu boyutu verelim */
+}
+.element1 {
+  background: orange;
+  height: 100vh;
+  text-align: center;
+  margin-bottom: 5rem;
+}
+.element2 {
+  background: blue;
+  text-align: center;
+}
+```
+
+Buraya kadar şu şekilde bir sayfa elde ettik:
+![ObserverOrnek1](/images/observer-ornek-1.gif)
+
+Öncelikle Intersection Observer constructor kullanarak bir instance yaratalım ve hedef elemanımızı takip etmeye başlayalım.
+
+```js
+// Kullanacağımız elemanları tanımlayalım:
+const bodyElement = document.querySelector("body");
+const element1 = document.querySelector(".element1");
+const element2 = document.querySelector(".element2");
+
+// const observer = new IntersectionObserver(callbackFunction,options) (options parametresi özel ayarlar belirtebileceğimiz bir objedir, opsiyoneldir)
+
+// bu callback fonksiyonu observe ettiğimiz elementler ekranda
+// gözükmeye başladığında/kaybolduğunda çalışacak
+// şimdilik sadece logluyoruz
+function callbackFunction(entries) {
+  entries.forEach((entry) => {
+    console.log(entry);
+    alert;
+  });
+}
+
+// IntersectionObserver instance'ımızı oluşturalım.
+const observer = new IntersectionObserver(callbackFunction);
+
+// element2'yi observe etmeye başlayalım:
+observer.observe(element2);
+```
+
+Sayfayı tarayıcımızdan açıp element2'ye doğru scroll ettikten sonra console'da şu şekilde bir entry objectinin loglandığını göreceksiniz:
+![ObserverLog](/images/observer-console.jpg)
+Çoğu zaman için en çok işimize yarayacak property'ler `intersectionRatio` ve `isIntersecting` olacaktır.
+
+`isIntersecting` property'si eğer hedef eleman root elemanda (varsayılan olarak viewport kullanılır) gözüküyorsa `true` gözükmüyorsa `false` döner.
+
+`intersectionRatio` ise hedef elemanımızın şu an yüzde kaçının göründüğünü döner. (Örneğin tamamı görünüyorsa 1 , hiç gözükmüyorsa 0.)
+
+Logu inceledikten sonra şimdi hedefimizi gerçekleştirmek için callbackFunction'ımızı yazalım:
+
+```js
+function callbackFunction(entries) {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      bodyElement.style.background = "red";
+    } else {
+      bodyElement.style.background = "white";
+    }
+  });
+}
+```
+
+Artık element2 göründüğünde arka planımızın kırmızı; görünmediğinde ise beyaz olduğunu görebiliriz.
+Örneği aşağıda inceleyebilirsiniz:
+
+<p class="codepen" data-height="300" data-default-tab="html,result" data-slug-hash="poLPbgb" data-user="elbaley" style="height: 300px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;">
+  <span>See the Pen <a href="https://codepen.io/elbaley/pen/poLPbgb">
+  Intersection Observer Demo</a> by Furkan (<a href="https://codepen.io/elbaley">@elbaley</a>)
+  on <a href="https://codepen.io">CodePen</a>.</span>
+</p>
+<script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
+
+## Options
+
+Intersection Observer constructor'ına ekleyeceğimiz options objecti ile callback fonksiyonumuzun çalışacağı durumlara ince ayar yapabiliriz. Kullanabileceğimiz seçenekler ise şunlar:
+
+`root`: Elemanımızın direkt olarak sayfada değil, başka bir elemanın içinde görünüp görünmediğini kontrol etmek istediğimizde burada hedef elemanı belirtebiliriz. (Örneğin overflowu gizlenmiş ve kaydırabildiğimiz bir divimiz var bu divi baz alarak görünürlüğü takip etmek istiyorsak bu divi burada belirtebiliriz.) Varsayılan olarak null olduğundan tüm sayfa baz alınır.
+
+`rootMargin`: CSS'deki margin değeri gibidir. Root nesnemize margin ekleyebiliriz. Bu parametreyi kullanmak için root parametresinin atanmış olması gerekir.
+
+`threshold` : Hedef elemanımızın yüzde kaçı göründüğünde fonksiyonumuzun çalışacağını belirler. Varsayılan değer 0 olduğundan hedef elemanımızın 1pixeli gözükmeye başladığı anda fonksiyonumuz değisir. Tek bir değer seçebildiğimiz gibi bir array içerisinde birden fazla değer de belirleyebiliriz. (Örneğin `0.5` değerini girersek elemanımızın yarısı gözüktüğü anda fonksiyonumuz çalışır. `[0.25,0.5]` arrayini atadığımızda ise fonksiyonumuz elemanımızın önce %25i göründüğünde sonra %50'si göründüğünde çalışır. )
+
+### Options Demo
+
+İlk demoda mavi arkaplana sahip olan element 2'nin 1 pixeli ekranda görünür görünmez arka plan rengimizi değiştiren fonksiyonumuz çalışıyor. Options objecti oluşturup threshold değerini 1 yaparsak element 2'nin tamamı görünmeyene kadar arka planımız beyaz kalacaktır:
+
+```js
+const options = {
+  threshold: 1,
+};
+const observer = new IntersectionObserver(callbackFunction, options);
+```
+
+<p class="codepen" data-height="300" data-default-tab="html,result" data-slug-hash="abYLqJM" data-user="elbaley" style="height: 300px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;">
+  <span>See the Pen <a href="https://codepen.io/elbaley/pen/abYLqJM">
+  Intersection Observer Demo 2 </a> by Furkan (<a href="https://codepen.io/elbaley">@elbaley</a>)
+  on <a href="https://codepen.io">CodePen</a>.</span>
+</p>
+<script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
+
+### Referanslar
+
+[🔗 MDN Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)
+
+[🔗 Understanding the Intersection Observer JavaScript API](https://medium.com/whatfix-techblog/understanding-the-intersection-observer-javascript-api-78661000c1f1)
+
+[🔗 Intersection Observer'ın nasıl çalıştığını görselleştiren bir pen](https://codepen.io/michellebarker/pen/xxwLpRG?editors=1010)

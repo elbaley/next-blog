@@ -1,0 +1,68 @@
++++
+title= "JWT (JSON Web Token) Nedir?"
+description = ""
+date= "2022-04-12T14:15:48+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"Javascript"
+]
+
+draft= false
++++
+
+## JWT Token Nedir?
+
+JSON Web Token autharization işleminde kullanabileceğimiz bir standarttır. Kısaca şu şekilde çalışır;
+
+- Sunucu belirlediğiniz `secret`'ı kullanarak bir `JSON Web Token` oluşturur.
+- Oluşturulan token istemciye gönderilir.
+- İstemci her `request`'te tokeni de gönderir, gönderilen token sunucuda doğrulanır.
+
+## JWT ve Cookie arasındaki fark nedir?
+
+Cookie kullandığımızda istemciden gelen request üzerine server sessionu kaydeder. Sonrasındaki her requestte cookie de yollanır. Sunucu cookie'yi sunucuda arayarak doğrular.
+
+JWT kullandığımızda ise istemciden gelen request üzerine server JWT token oluşturur. Sonrasındaki her requestte token de yollanır. Sunucu tokenin doğruluğunu kontrol eder. Aradaki fark token kullandığımızda servera herhangi bir bilgi yazmamıza gerek kalmamasıdır.
+
+![JWT Token ve Cookie](/post/jwt-json-web-token-nedir/cookie-vs-jwt.jpg)
+
+## JWT token nasıl oluşturulur?
+
+JWT tokenler nokta (`.`) ile birbirinden ayrılan 3 bölümden oluşur:
+
+- Header (Hash algoritmasının belirlendiği bölümdür.)
+- Payload (Verimizi eklediğimiz bölümdür.Burada `iss` `exp` gibi bazı keyler rezerve edilmiştir. Örneğin `iss` keyi token için expiration date belirlememizi sağlar. )
+- Signature (Header, Payload ve `secret` belirlenen algoritma ile kodlanarak signature elde edilir.)
+
+JWT tokenleri oluşturmak ve doğrulamak için kullandığınız dil ve environment için bir library kullanabilirsiniz. [jwt.io](https://jwt.io/libraries) adresinden seçeneklere göz atabilirsiniz.
+
+Örneğin Node.js için `jsonwebtoken` paketini kuralım:
+
+```shell
+npm install jsonwebtoken
+```
+
+Projemize import edelim.
+
+```javascript
+import jwt from "jsonwebtoken";
+```
+
+JWT Token oluşturmak için:
+
+```javascript
+// jwt.sign(PAYLOAD, SECRET, OPTIONS);
+const token = jwt.sign({ kullaniciAdi: "Furkan" }, "secretdegeri", {
+  expiresIn: "1d",
+});
+```
+
+JWT Tokeni doğrulamak için:
+
+```javascript
+const result = jwt.verify(token, "secretdegeri");
+```

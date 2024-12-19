@@ -1,0 +1,86 @@
++++
+title= "CSS Yatay Menü Yapımı"
+date= "2022-11-24T16:00:01+03:00"
+author = "Furkan"
+favorite = false
+description ="CSS ile yatay menü oluşturmak için 3 farklı yol izleyebiliriz: display:inline,float:left ve display:flex..."
+tags = [
+
+]
+categories = [
+    "CSS"
+
+]
+
+
+draft= false
++++
+
+## display:inline çözümü
+
+Öncelikle menü için gereken HTML yapısını oluşturalım :
+
+```html
+<nav>
+  <ul>
+    <li><a href="#">Anasayfa</a></li>
+    <li><a href="#">Hakkında</a></li>
+    <li><a href="#">İletişim</a></li>
+  </ul>
+</nav>
+```
+
+Varsayılan olarak liste elemanlarının(`li`) `display` özelliği `list-item` olduğundan tıpkı "display:block" değerine sahip elemanlar gibi yatayda alabildiği tüm genişliği kaplıyor böylece her liste elemanı bir alt satırdan başlıyor.
+![](/images/li-block-level.webp)
+li etiketinin display değerini "inline" olarak değiştirirsek her bir liste elemanı yan yana gelecektir. Ayrıca her elemanın başında bulunan disk (marker) da kaybolacaktır.
+
+```css
+li {
+  display: inline;
+}
+```
+
+<p class="codepen" data-height="300" data-default-tab="html,result" data-slug-hash="KKeRprL" data-user="elbaley" style="height: 300px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;">
+  <span>See the Pen <a href="https://codepen.io/elbaley/pen/KKeRprL">
+  Yatay Menü 0</a> by Furkan (<a href="https://codepen.io/elbaley">@elbaley</a>)
+  on <a href="https://codepen.io">CodePen</a>.</span>
+</p>
+<script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
+
+## float:left çözümü
+
+Liste elemanlarını yan yana görüntülemek için "float" özelliği kullanabilir. Örneğin "float:left;" elemanın dışındaki container'ın soluna yaslanmasını ve yalnızca kapladığı alan kadar yer almasını sağlar.
+
+```css
+li {
+  float: left; // elemanların sola yaslanmasını sağlar
+}
+```
+
+<p class="codepen" data-height="300" data-default-tab="html,result" data-slug-hash="QWmVeBp" data-user="elbaley" style="height: 300px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;">
+  <span>See the Pen <a href="https://codepen.io/elbaley/pen/QWmVeBp">
+  Yatay Menü 1</a> by Furkan (<a href="https://codepen.io/elbaley">@elbaley</a>)
+  on <a href="https://codepen.io">CodePen</a>.</span>
+</p>
+<script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
+Ancak yukarıdaki demoda da göründüğü gibi li elemanları yanyana gelince display özellikleri list-item olması sebebiyle markerlar yeniden gösteriliyor ve kötü bir görüntü oluşturuyor.
+
+Bunu düzeltmek için eklemeler yapalım:
+
+<p class="codepen" data-height="300" data-default-tab="html,result" data-slug-hash="oNydgQN" data-user="elbaley" style="height: 300px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;">
+  <span>See the Pen <a href="https://codepen.io/elbaley/pen/oNydgQN">
+  Yatay Menü 2</a> by Furkan (<a href="https://codepen.io/elbaley">@elbaley</a>)
+  on <a href="https://codepen.io">CodePen</a>.</span>
+</p>
+<script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>
+
+## display:flex çözümü
+
+"display:flex" kullanarak tüm elemanları yan yana alabiliriz. Ardından "gap" ekleyerek flex elemanlarının arasına boşluk ekleyebiliriz.
+
+<p class="codepen" data-height="300" data-default-tab="html,result" data-slug-hash="LYrmEXP" data-user="elbaley" style="height: 300px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;">
+  <span>See the Pen <a href="https://codepen.io/elbaley/pen/LYrmEXP">
+  Yatay Menü 2</a> by Furkan (<a href="https://codepen.io/elbaley">@elbaley</a>)
+  on <a href="https://codepen.io">CodePen</a>.</span>
+</p>
+<script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script>

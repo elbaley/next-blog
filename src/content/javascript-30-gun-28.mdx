@@ -1,0 +1,78 @@
++++
+title= "Javascript 30 - Gün 28"
+description = "Javascript 30 Challenge Proje 28: Javascript ile video hızı ayarlama"
+date= "2023-06-10T03:06:04+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"Javascript"
+]
+
+draft= false
++++
+Projenin demosu : [Demo](https://elbaley.github.io/js-30/28/index-solution.html)
+
+Başlangıç dosyalarını bulabileceğiniz repom: [js-30 | github](https://github.com/elbaley/js-30)
+
+
+## Amaç
+[11.günde](https://furkanleba.com/javascript-30-gun-11/) daha karmaşık bir halini yaptığımız gibi video hızını ayarlama projesi yapacağız.
+
+## Çözüm
+**HTML**:
+```html
+<div class="wrapper">
+  <video class="flex" width="765" height="430" src="https://elbaley.github.io/js-30/11/652333414.mp4"  loop
+    controls></video>
+  <div class="speed">
+    <div class="speed-bar">1×</div>
+  </div>
+</div>
+```
+**Javascript**:
+```html
+<script>
+const speed = document.querySelector('.speed')
+const speedBar = document.querySelector('.speed-bar')
+const video = document.querySelector('.flex')
+
+let isDown = false;
+
+function setPlaybackRate(e) {
+  // eğer fare tuşuna basılı değilse early return ile durdur
+  if (!isDown) return
+
+  const y = e.pageY - this.offsetTop
+  // speedbarın konumu ile yüzdeyi hesaplayalım
+  const speedPercent = y / this.offsetHeight
+
+  // minimum - maksimum hızları tanımlayalım
+  const minPercent = 0.25
+  const maxPercent = 5
+  const height = Math.round(speedPercent * 100) + '%'
+  // oynatma hızını minimum-maksimum hız aralığında olacak şekilde hesaplayalım
+  const playbackRate = speedPercent * (maxPercent - minPercent) + minPercent
+
+  // hız barının yüksekliğini ayarlayalım
+  speedBar.style.height = height
+  // güncel hız değerini yazdıralım
+  speedBar.textContent = playbackRate.toFixed(2) + "x"
+
+  //video oynatma hızını güncelleyelim
+  video.playbackRate = playbackRate
+}
+
+speed.addEventListener('mousemove',setPlaybackRate)
+
+// fare tuşuna basıldığında / tuş bırakıldığında isDown değişkenini güncelleyelim
+speed.addEventListener('mousedown', () => {
+  isDown = true
+})
+speed.addEventListener('mouseup', () => {
+  isDown = false
+})
+</script>
+```

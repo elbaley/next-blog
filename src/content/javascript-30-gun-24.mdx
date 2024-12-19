@@ -1,0 +1,68 @@
++++
+title= "Javascript 30 - Gün 24"
+description = "Javascript 30 Challenge Proje 24:Javascript ile yapışkan menü yapmak"
+date= "2023-05-20T03:15:39+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"Javascript"
+]
+
+draft= false
++++
+
+Projenin demosu : [Demo](https://elbaley.github.io/js-30/24/index-solution.html)
+
+Başlangıç dosyalarını bulabileceğiniz repom: [js-30 | github](https://github.com/elbaley/js-30)
+
+## Amaç
+Javascript ve CSS kullanarak yapışkan bir menü oluşturmamız gerekiyor. 
+## Çözüm
+Öncelikle menünün sayfanın neresinden başladığını bulmamız gerekiyor. Bunun için menü elementini seçip `offsetTop` değerini kaydedelim. Ardından sayfada `scroll` olayını dinleyerek menünün bulunduğu yere kadar kaydırma işlemi yapıldığında menüye özel bir css classı ekleyelim. 
+```js
+const nav = document.querySelector('#main')
+const topOfNav = nav.offsetTop;
+
+function fixNav() {
+  if (window.scrollY >= topOfNav) {
+  nav.classList.add('fixed-nav');
+  // fixed-nav classı eklenerek menünün sabit kalmasını sağlayalım
+
+  // sonrasında body elementine menünün yüksekliği kadar paddingTop ekleyerek içeriğin menüye doğru çıkmasını engelleyelim
+  document.body.style.paddingTop = nav.offsetHeight + 'px';
+  } else {
+  nav.classList.remove('fixed-nav');
+  document.body.style.paddingTop = 0;
+  }
+}
+
+window.addEventListener('scroll', fixNav);
+```
+Geriye yalnızca ilgili css classını eklemek kalıyor. style.css dosyasında:
+```css
+.fixed-nav{
+position:fixed;
+box-shadow:0 5px rgba(0,0,0,0.1)
+}
+```
+Son olarak css dosyasında menü içerisindeki logo elementiyle ilgili özelliklere ek bir özellik ekleyerek menü yapışkan hale geldiğinde logonun da görünür olmasını sağlayalım:
+```css
+li.logo {
+  max-width: 0;
+  overflow: hidden;
+  background: white;
+  transition: all .5s;
+  font-weight: 600;
+  font-size: 30px;
+}
+/* Logo elementi .fixed-nav sınıfına sahip bir elementin içinde olduğunda genişlik değeri 0 yerine
+* 500px olacak ve ekran gözükmeye başlayacaktır.
+* */
+.fixed-nav li.logo{
+  max-width:500px;
+}
+```
+

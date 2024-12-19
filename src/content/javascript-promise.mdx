@@ -1,0 +1,124 @@
++++
+title= "Javascript Promise"
+description = ""
+date= "2022-03-18T01:56:12+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"Javascript"
+]
+
+draft= false
++++
+
+## Promise nedir ve ne işe yarar?
+
+Promise'ler async (asenkron) işlemler yapabilmenin yollarından biridir. Asenkron işlemleri anlamak hayali bir senaryo düşünelim;
+
+> Kahvaltı için omlet ve çay hazırladığınızı düşünün. Öncelikle çay için suyu kaynatmaya başladınız. Su kaynarken başında durup aval aval suya bakarsanız senkron bir iş yapmış olursunuz. Ancak su kaynarken omlet yapmaya girişirseniz asenkron bir iş yapmış olursunuz.
+
+[Asenkron konseptine daha detaylı bir bakış için okuyabilirsiniz](https://atarikguney.medium.com/asenkron-asynchronous-programlama-nedir-296230121f9d)
+
+Bir Promise 3 durumda olabilir :
+
+-   **pending** : Başlangıçtaki state budur. Promise ne tamamlanmış ne de başarısız olmuştur. (Baştaki senaryoya uyarlarsak ne su kaynamış ne de suyun kaynamasını herhangi bir sebeple başarısız olmuştur.)
+-   **fulfilled** : İşlem başarıyla sonuçlandığında Promise'in bulunduğu stage budur. (Su başarıyla kaynamıştır.)
+-   **rejected**: İşlem başarısız olmuştur. (Herhangi bir sebeple su kaynamamıştır.)
+
+## Promise oluşturma
+
+Javascript'te Promise oluşturmak için `Promise constructor` kullanabiliriz. Constructor'u oluştururken callback function'ınmız `resolve` ve `reject` parametrelerini içermeli.
+
+```js
+// Promise oluşturma
+const promise = new Promise((resolve, reject) => {
+	resolve('işlem başarılı');
+	reject('işlem başarısız');
+});
+```
+
+Başlangıçtaki senaryomuz için bir Promise oluşturalım;
+
+```js
+// Promise oluşturma
+const suKaynatma = new Promise((resolve, reject) => {
+	setTimeout(() => {
+		const suDerecesi = 100;
+		if (suDerecesi === 100) {
+			resolve('✅ Su başarıyla kaynadı.');
+		} else {
+			reject('❌ Su kaynatılamadı.');
+		}
+	}, 2000);
+});
+
+suKaynatma
+	.then((result) => {
+		console.log(result);
+	})
+	.catch((error) => {
+		console.log(error);
+	});
+
+// => '✅ Su başarıyla kaynadı.'
+// Koşulumuz sağlandığı için Promise 2 saniye sonunda fulfilled stage'ine geçti.
+// resolve callbacki işlemin başarılı olduğunu belirten stringi döndü.
+```
+
+Aynı promise'in başarısız olduğu kod ise şu şekilde olacaktır:
+
+```js
+// Promise oluşturma
+const suKaynatma = new Promise((resolve, reject) => {
+	setTimeout(() => {
+		const suDerecesi = 99;
+		if (suDerecesi === 100) {
+			resolve('✅ Su başarıyla kaynadı.');
+		} else {
+			reject('❌ Su kaynatılamadı.');
+		}
+	}, 2000);
+});
+
+suKaynatma
+	.then((result) => {
+		console.log(result);
+	})
+	.catch((error) => {
+		console.log(error);
+	});
+
+// => '❌ Su kaynatılamadı.'
+// Koşulumuz sağlanmadığı için Promise 2 saniye sonunda rejected stage'ine geçti.
+// reject callbacki işlemin başarısız olduğunu belirten stringi döndü.
+```
+
+Yukarıdaki örneklerde de görebileceğiniz gibi Promise'i tüketirken `.then` `.cath` metodlarıyla birlikte `callback` fonksiyonları tanımlıyoruz. Bu örnekteki gibi basit bir fonksiyonda sorun yaratmasa da daha karmaşık projelerde `callback hell` diye tabir edilen kodun anlaşılmasının zorlaşacağı bir duruma evrilebilir. Bu duruma çözüm olabilecek yollardan biri `async/ await` kullanmaktır.
+
+## async / await
+
+async / await yapısını kullanmak için bir `Promise` dönecek fonksiyonun önüne `async` ekleyip, Promise değerini saklamak istediğimiz değişkenin önüne ise `await` keywordünü eklememiz yeterli.
+
+```js
+const miyavla = async () => {
+	return 'miyav!';
+};
+
+miyavla();
+// => Promise {<fulfilled>: 'miyav!'}
+// Fonksiyonu çağırdığımızda bir Promise dönüyor.
+
+//Promise'deki değeri tüketebilmek için değişkene await ekleyelim
+const kediSesi = await miyavla();
+console.log(kediSesi);
+// => 'miyav!'
+```
+
+#### Referanslar
+
+https://flaviocopes.com/javascript-promises/
+
+https://github.com/Asabeneh/30-Days-Of-JavaScript/blob/master/18_Day_Promises/18_day_promises.md
