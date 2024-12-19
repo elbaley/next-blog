@@ -18,7 +18,7 @@ draft= false
 
 Javascript ile istenilen elemanın DOM üzerinde görünüp görünmediğini takip etmek geçmişten beri zor bir işti. Bu işlem için 'scroll' eventini dinleyip hedef elemanın DOM üzerindeki konumuna göre aksiyon alıyorduk. Ancak bu yaklaşımda performans sorunları ve istenmeyen davranışlar kaçınılmaz oluyordu. Neyse ki web sitelerinin bu ihtiyaçları geliştikçe bu amaca yönelik bir API geliştirildi.
 
-![Deneme](/images/observer-ornek.jpg)
+![Deneme](/images/observer-ornek.webp)
 Örneğin Element 2 ekranda görünür olduğu anda sitemizin arka planını değiştirmek istiyorsak eskiden izlediğimiz yol şu şekildeydi:
 
 - Element 2'nin DOM'daki konumunu al.
@@ -100,7 +100,7 @@ observer.observe(element2);
 ```
 
 Sayfayı tarayıcımızdan açıp element2'ye doğru scroll ettikten sonra console'da şu şekilde bir entry objectinin loglandığını göreceksiniz:
-![ObserverLog](/images/observer-console.jpg)
+![ObserverLog](/images/observer-console.webp)
 Çoğu zaman için en çok işimize yarayacak property'ler `intersectionRatio` ve `isIntersecting` olacaktır.
 
 `isIntersecting` property'si eğer hedef eleman root elemanda (varsayılan olarak viewport kullanılır) gözüküyorsa `true` gözükmüyorsa `false` döner.
