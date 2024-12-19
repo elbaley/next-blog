@@ -15,7 +15,7 @@ export const Post = ({ post }: PostProps) => {
   return (
     <article className="pb-4 border-b last:border-none first:pt-0 pt-8">
       <Link href={post.href} className="hover:underline">
-        <h2 className="text-4xl pb-5">{post.title}</h2>
+        <h2 className="font-bold text-4xl pb-5">{post.title}</h2>
       </Link>
       <span className="text-secondary ">{post.date}</span>
 

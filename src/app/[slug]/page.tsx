@@ -3,6 +3,7 @@ import matter from "gray-matter";
 import toml from "toml";
 import remarkParse from "remark-parse";
 import rehypeStringify from "rehype-stringify";
+import rehypeRaw from "rehype-raw";
 import rehypePrettyCode from "rehype-pretty-code";
 import remarkRehype from "remark-rehype";
 import { transformerCopyButton } from "@rehype-pretty/transformers";
@@ -26,7 +27,8 @@ export default async function Page({
   // Use remark to convert markdown into HTML string
   const processedContent = await unified()
     .use(remarkParse)
-    .use(remarkRehype)
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeRaw)
     .use(rehypePrettyCode, {
       theme: "tokyo-night",
       transformers: [
