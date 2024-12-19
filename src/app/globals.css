@@ -77,16 +77,16 @@ body {
 }
 
 code {
-  counter-reset: line; /* Sadece kapsayıcıda tanımlanır */
+  counter-reset: line;
 }
 
 code [data-line]::before {
-  counter-increment: line; /* Her satırda sayaç artırılır */
-  content: counter(line); /* Sayaç değeri gösterilir */
+  counter-increment: line;
+  content: counter(line);
 
   /* Stil ayarları */
   display: inline-block;
-  width: 2rem; /* Numara genişliği */
+  width: 2rem;
   margin-right: 1rem;
   text-align: right;
   color: gray;
