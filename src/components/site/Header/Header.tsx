@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export const Header = () => {
   return (
-    <div className="sticky top-0 bg-black/80 backdrop-blur-sm min-h-16 border-b flex  items-center  w-full">
+    <div className="sticky z-50 top-0 bg-black/80 backdrop-blur-sm min-h-16 border-b flex  items-center  w-full">
       <header className=" px-6 flex items-center gap-2">
         <Link href="/">
           <div id="logo" className="flex gap-1 items-center">
