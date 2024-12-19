@@ -1,0 +1,73 @@
++++
+title= "Javascript Hoisting Nedir?"
+description = ""
+date= "2023-06-12T03:27:08+03:00"
+author = "Furkan"
+favorite = false
+tags = [
+
+]
+categories = [
+"Javascript"
+]
+
+draft= false
++++
+Javascript'te fonksiyonları ve değişkenleri declare edilmeden önce kullanılabilirler, bunun sebebi `hoisting`(yukarı kaldırma,kaldırma)dir.
+
+## Declaration ve Initilization Farkı
+Hoistingin nasıl çalıştığını kavramak için öncelikle **declaration** ve **initialization** farkını bilmeliyiz. Declaration bir değişkenin var / let / const keywordlerinden herhangi biriyle tanımlanması anlamına gelirken, initialization bir değişkene başlangıç değeri atanması anlamına gelir.
+
+```js
+let meyve ; // Declaration (meyve değişkeni tanımlandı)
+meyve = "armut"; //Initialization (meyve değişkenine başlangıç değeri atanıyor.)
+
+// bu iki işlemi tek satırda da yapabiliriz;
+let sebze = "brokoli"
+```
+## Hoisting Nedir?
+Hoisting değişkenlerin, fonksiyonların declaration'larının üste çıkarılmasıdır. Bu sayede Javascript'te başlangıç değeri atanmamış bir değişkene erişebiliriz herhangi bir hata ile karşılaşmadan. 
+```js
+console.log(isim); // => undefined
+var isim = 'furkan';
+```
+Örnekte görüleceği üzere isim daha sonra declare edilip başlangıç değeri verilse de hoisting isim adlı değişkenin declaration'ını en üste alır böylece loglamaya çalıştığımızda herhangi bir hata almayız. Ancak dikkat edersek logladığımız değer `"furkan"` değil `"undefined"` olacaktır. Çünkü hoisting yalnızca declartion'ı yukarı taşır, başlangıç değeri dolayısıyla "undefined" olur. Yani sadece anlaşılması için kodumuzun çalıştırılmadan önce bu şekle dönüştürüldüğünü varsayabiliriz:
+```js
+var isim;
+console.log(isim); // => undefined
+isim = 'furkan';
+```
+
+## var ve  let / const ile Tanımlanan Değişkenlerde Hoisting 
+Yukarıdaki örneklerde görebileceğiniz gibi `var` ile tanımladığımız değişkenlere erişmeye çalıştığımızda hoist işlemi sayesinde bir hata almıyor ancak başlangıç değeri olarak `undefined` alıyoruz. ES5 ile tanıtılan `let` ve `const` ile oluşturduğumuz değişkenlerde ise declaration'lar yine hoisting sayesinde yukarı alınıyor ancak **başlangıç değerleri olmuyor** bu sebeple bu değişkenlere erişmeye çalıştığımızda `ReferenceError` alıyoruz.
+
+```js
+console.log(yas); // => Uncaught ReferenceError: yas is not defined
+let yas = 24;
+```
+`var` ile tanımlanan değişkenlerde uygulanan hoisting kafa karışıklığı yaratabileceğinden, mümkün olduğunca teknik olarak mümkün olsa dahi tanımlamadığız değişkenlere erişmekten kaçınmak önerilir.
+
+## Fonksiyonlarda Hoisting
+`function` keywordü ile declare ettiğimiz fonksiyonlarda hoisting gerçekleşirken `const` `let` ile oluşturduğumuz function expressionlarda hoisting gerçekleşmez. 
+
+```js
+greet() // => 'Hello'
+
+function greet(){
+  console.log('Hello');
+}
+```
+```js
+warn() // => Uncaught ReferenceError: warn is not defined
+
+const warn =() =>{
+  console.log('Warning!');
+}
+```
+### Referanslar
+
+[🔗 Hoisting MDN](https://www.notion.so/zarkom/Introduction-to-Git-ac396a0697704709a12b6a0e545db049)
+
+[🔗 What is Hoisting in Javascript](https://www.freecodecamp.org/news/what-is-hoisting-in-javascript/)
+
+
