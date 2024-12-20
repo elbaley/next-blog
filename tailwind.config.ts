@@ -59,6 +59,19 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      typography: () => ({
+        DEFAULT: {
+          css: {
+            a: {
+              color: "hsl(var(--accent))",
+              textDecoration: "none",
+              "&:hover": {
+                color: "hsl(var(--foreground))",
+              },
+            },
+          },
+        },
+      }),
     },
   },
   plugins: [
