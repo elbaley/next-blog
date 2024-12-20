@@ -13,7 +13,7 @@ export const Header = () => {
         <div id="navbar-links" className="text-sm">
           <Link
             className="text-secondary hover:text-secondary-foreground"
-            href="/"
+            href="/hakkimda"
           >
             Hakkımda
           </Link>
