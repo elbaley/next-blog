@@ -1,15 +1,9 @@
 import { readdir, readFile } from "fs/promises";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, LucideArrowLeft, LucideArrowRight } from "lucide-react";
 import matter from "gray-matter";
 import toml from "toml";
-import remarkParse from "remark-parse";
-import rehypeStringify from "rehype-stringify";
-import rehypeRaw from "rehype-raw";
-import rehypePrettyCode from "rehype-pretty-code";
-import remarkRehype from "remark-rehype";
-import { transformerCopyButton } from "@rehype-pretty/transformers";
-import { unified } from "unified";
 import Link from "next/link";
+import { getPost } from "@/lib/getPost";
 
 export default async function Page({
   params,
@@ -17,49 +11,50 @@ export default async function Page({
   params: Promise<{ slug: string }>;
 }) {
   const slug = (await params).slug;
-  const fileContents = await readFile("./src/content/" + slug + ".mdx", "utf8");
-
-  const matterResult = matter(fileContents, {
-    delimiters: "+++",
-    engines: {
-      toml: toml.parse.bind(toml),
-    },
-    language: "toml",
-  });
-  // Use remark to convert markdown into HTML string
-  const processedContent = await unified()
-    .use(remarkParse)
-    .use(remarkRehype, { allowDangerousHtml: true })
-    .use(rehypeRaw)
-    .use(rehypePrettyCode, {
-      theme: "tokyo-night",
-      transformers: [
-        transformerCopyButton({
-          visibility: "hover",
-          feedbackDuration: 1_000,
-        }),
-      ],
-    })
-
-    .use(rehypeStringify)
-    .process(matterResult.content);
-
-  const contentHtml = processedContent.toString();
-  const date = new Date(matterResult.data.date).toLocaleDateString("tr-TR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-  const githubEditUrl = `https://github.com/elbaley/next-blog/edit/main/src/content/${slug}.mdx`;
+  const {
+    postDate,
+    postTitle,
+    githubEditUrl,
+    contentHtml,
+    nextPost,
+    previousPost,
+  } = await getPost(slug);
 
   return (
     <article className="prose max-w-[80ch] dark:prose-invert prose-inline-code:border prose-inline-code:before:hidden prose-inline-code:after:hidden prose-inline-code:p-1 prose-inline-code:border-secondary/40 prose-inline-code:rounded-md prose-inline-code:bg-secondary/20 prose-pre:ps-0 prose-pre:pe-0 prose-pre:p-0 prose-pre:py-2">
-      <h1>{matterResult.data.title}</h1>
-      <span className="text-secondary ">{date}</span>
+      <h1>{postTitle}</h1>
+      <span className="text-secondary ">{postDate}</span>
       <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
+
+      {nextPost && (
+        <Link className="text-foreground" href={nextPost.href}>
+          <div className="my-4 group  cursor-pointer border rounded-md px-4 py-2 flex justify-between items-center hover:border-white">
+            <div>
+              <span className="text-sm text-secondary">Sonraki</span>
+              <p className="font-semibold text-base m-0">{nextPost.title}</p>
+            </div>
+            <LucideArrowRight className="text-border group-hover:text-white" />
+          </div>
+        </Link>
+      )}
+
+      {previousPost && (
+        <Link className="text-foreground" href={previousPost.href}>
+          <div className="group cursor-pointer border rounded-md px-4 py-2 flex gap-4 items-center hover:border-white">
+            <LucideArrowLeft className="text-border group-hover:text-white" />
+            <div>
+              <span className="text-sm text-secondary">Önceki</span>
+              <p className="font-semibold text-base m-0">
+                {previousPost.title}
+              </p>
+            </div>
+          </div>
+        </Link>
+      )}
+
       <Link
         href={githubEditUrl}
-        className="flex justify-end pt-4 gap-1 items-center text-accent hover:text-foreground "
+        className="flex justify-end py-4 gap-1 items-center text-accent hover:text-foreground "
       >
         <svg
           className="h-6 fill-white mr-1"

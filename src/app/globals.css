@@ -83,16 +83,12 @@ code {
 code [data-line]::before {
   counter-increment: line;
   content: counter(line);
-
-  /* Stil ayarları */
   display: inline-block;
   width: 2rem;
   margin-right: 1rem;
   text-align: right;
   color: gray;
 }
-
-
 
 @layer base {
   * {
