@@ -1,4 +1,13 @@
 User-Agent: *
 Disallow: /resume.pdf
 
+User-Agent: *
+Disallow: /cv.pdf
+
+User-Agent: *
+Disallow: /cv-tr.pdf
+
+User-Agent: *
+Disallow: /cv-en.pdf
+
 Sitemap: https://furkanleba.com/sitemap.xml
